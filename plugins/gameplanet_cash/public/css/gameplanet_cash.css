@@ -1,0 +1,95 @@
+:root {
+  --body-mapa-sucursales_cash: 100%;
+}
+#cash_form_wrapper{
+  height: 100%;
+}
+.cash_green{
+  color: #09a504;
+}
+#slider_container {
+  padding: 0 2em 2em;
+}
+#gp_cash_form_wrapper{
+  padding: 1em 2em;
+  height: calc(100vh  - 170px);
+}
+
+#gp_cash_form > * #image_cb{
+  padding: 0 2em;
+  max-height: 200px;
+  overflow: auto;
+}
+#gp_cash_form > * #image_cb > * .image_option{
+  cursor:pointer;
+}
+#gp_cash_form > * #image_cb >*.imgCheckbox0{
+  filter: grayscale(0.75);
+  -webkit-filter: grayscale(0.75);
+} 
+#gp_cash_form > * #image_cb >*.imgCheckbox0.imgChked{
+  filter: none;
+  -webkit-filter: none;
+} 
+#gp_cash_map_container{
+  height: 100%;
+}
+#cash_map-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:var(--body-mapa-sucursales_cash);
+  width: 100%;
+}
+#mapa_sucursales_cash {
+  height: 100%;
+  width: 100%;
+
+}
+#cash_response_barcode_container{
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding:1em 0;
+}
+#cash_response_barcode_img{
+  height:80px;
+}
+.cash_response_inst{
+  text-align:center;
+  padding-bottom: 1em;
+}
+.cash_response_info{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.cash_response_info p{
+  padding-bottom: 1em;
+}
+#cash_response_print_button_container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cash_response_footer{
+  font-size: 0.8em;
+  text-align: center;
+  
+}
+.cash_response_footer > p{
+  padding-bottom: 0.5em;
+  margin:0 !important;
+}
+@media only screen and (max-width: 800px) {
+  #gp_cash_form_wrapper{
+    height: auto;
+  }
+  #gp_cash_map_container {
+    display: none;
+   
+  }
+
+}

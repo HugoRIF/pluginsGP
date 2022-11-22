@@ -1,0 +1,44 @@
+/**
+ * El CSS para la funcionalidad específica de las páginas
+ * del admin debe ser incluido en este archivo
+ */
+
+
+/** configuracion **/
+
+.admin_gp_input {
+    width: 100%;
+    margin: 5px 0 10px 0;
+}
+
+.gp_config {
+    width: 100%;
+}
+
+.gp_columna_config {
+    width: 48%;
+    padding-bottom: 15px;
+}
+
+.gp_columna_izquierda_config {
+    float: left;
+}
+
+.gp_columna_derecha_config {
+    float: right;
+}
+
+.admin_gp_input::placeholder {
+    color: black;
+    opacity: 1;
+}
+
+@media screen and (max-width: 600px) {
+    .gp_columna_derecha_config {
+        float: unset;
+    }
+    .gp_columna_config {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

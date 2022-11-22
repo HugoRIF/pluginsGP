@@ -1,0 +1,21 @@
+/**
+ * El CSS para la funcionalidad específica de las páginas
+ * públicas debe ser incluido en este archivo
+ */
+
+.gp_float_box {
+    box-shadow: 0px 0px 15px 2px #d3d3d3;
+    padding: 1em 1em 1em 1em;
+    margin: 0.5em 1em 2em 1em;
+}
+
+.gp_has_border {
+    border: 1px solid #ddd !important;
+    background-color: #f6f7f7;
+    padding: 15px 30px 30px;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' -25, 'opsz' 20 !important;
+    font-size: 1px;
+}

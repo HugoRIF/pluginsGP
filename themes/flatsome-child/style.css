@@ -1,0 +1,104 @@
+/*
+Theme Name: Flatsome Child
+Description: This is a child theme for Flatsome Theme
+Author: UX Themes
+Template: flatsome
+Version: 4.2
+*/
+
+
+/** #0087b7 -azul */
+
+
+/*************** ADD CUSTOM CSS HERE.   ***************/
+
+
+/* Tablets en horizonal y escritorios -------------------------------------------------------------------------*/
+
+@media (min-width: 1024px) {
+    .product-container {
+        width: 80% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media only screen and (min-width: 1920px) {
+    .content-area {
+        width: 1920px;
+        margin: 0px auto;
+    }
+}
+
+
+/*moviles algo chicos menos de 390*/
+
+@media (max-width: 389px) {
+    .gp_overflow_direccion {
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+        width: 14em !important;
+    }
+    .gp_overflow_tienda {
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+        width: 9em !important;
+    }
+}
+
+
+/* css precios (catalogo/producto simple) */
+
+.gp_precio_promo {
+    font-size: 0.6em;
+}
+
+.gp_descuento_promo {
+    color: red;
+    font-weight: normal;
+    opacity: 0.8;
+    font-size: 0.6em;
+}
+
+.gp_precio_lista {
+    font-size: 0.7em;
+    color: #565959;
+    font-weight: normal;
+}
+
+.gp_precio_ps {
+    line-height: 0.5em;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+}
+
+
+/* css "precio total" (carrito/checkout) */
+
+.gp_total_price {
+    font-size: 1.3em !important;
+    color: black !important;
+}
+
+
+/* css meta */
+
+.gp_fw-b {
+    font-weight: bold;
+}
+
+.gp_mt-1em {
+    margin-top: 1em;
+}
+
+#order-tracking-wrapper .loader-general {
+    border-color: #1570cd;
+    border-bottom-color: transparent;
+    width: 3em;
+    height: 3em;
+}
+
+
+/* temporal */

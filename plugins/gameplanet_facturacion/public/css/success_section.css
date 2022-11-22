@@ -1,0 +1,133 @@
+.gp_success-box{
+  border-top: 0.5em solid #7a9c59; 
+  margin-bottom: 0 !important;
+}
+.factura-success_section_header{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* border-bottom: 0.05em solid green; */
+}
+.factura-success_section_header > .icon-container{
+  display: flex;
+  justify-content: center;
+  font-size: 2em;
+  background-color:#7a9c59;
+  border-radius: 50%;
+  width: fit-content;
+  padding:0.4em 0.5em;
+  margin-bottom: 0.5em;
+  color: white;
+}
+.factura-success_section_header > .message-container{
+  text-align: center;
+}
+
+
+#success_section_response{
+  margin:auto;
+}
+#success_section_response > .response{
+  text-align: center;
+}
+#success_section_response > .link_button{
+   display: flex;
+   justify-content: center;
+  cursor: pointer;
+}
+#success_section_response > .link_button > a{
+  border:0.1em solid #7a9c59;
+  background-color: #7a9c59;
+  border-radius: 40px;
+  margin-bottom: 0;
+}
+#success_section_response > .copy_button{
+  text-align: center;
+}
+#success_section_response > .copy_button >button{
+  text-transform: none;
+  font-size: 0.8em;
+}
+.copy_button{
+  text-transform: none;
+}
+
+
+.gp_fail-box{
+  border-top: 0.5em solid #b20000; 
+  margin-bottom: 0 !important;
+}
+.factura-fail_section_header{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* border-bottom: 0.05em solid green; */
+}
+.factura-fail_section_header > .icon-container{
+  display: flex;
+  justify-content: center;
+  font-size: 2em;
+  background-color:#b20000;
+  border-radius: 50%;
+  width: fit-content;
+  padding:0.4em 0.5em;
+  margin-bottom: 0.5em;
+  color: white;
+  transform: rotate(45deg);
+}
+.factura-fail_section_header > .message-container{
+  text-align: center;
+}
+
+
+#fail_section_response{
+  margin:auto;
+  text-align: center;
+
+}
+#fail_section_response > * p{
+ margin:0 !important;
+}
+#fail_section_response > .response{
+  text-align: center;
+}
+#fail_section_response > .data{
+  text-align: center;
+  font-size: 0.95em;
+
+}
+
+.gp_message{
+  padding: 1em;
+  display: flex;
+  align-items: center;
+}
+.gp_message p{
+  margin:0;
+  margin-left: 1em;
+}
+
+.gp_message .icon-container span{
+  font-size:35px !important;
+} 
+.gp_message.warning{
+
+  border-top: 0.5em solid orange;
+} 
+.gp_message.warning .icon-container{
+  color: orange;
+}
+.gp_message.success{
+  border-top: 0.5em solid #7a9c59;
+  background-color: inherit;
+} 
+.gp_message.success .icon-container{
+  color: #7a9c59;
+}
+.gp_message.success .icon-container div{
+  padding:0.2em 0.5em;
+  border: 0.2em solid #7a9c59;
+  border-radius: 50%
+}

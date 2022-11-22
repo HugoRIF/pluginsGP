@@ -1,0 +1,224 @@
+.preventa_box_container{
+  padding: 1em 2em!important;
+  margin: 1em !important;
+  font-size: 0.9em;
+}
+
+.preventas_loading{
+  display: flex;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+  margin:0 auto;
+  padding:0
+}
+.preventas_loading .loader-general{
+  height: 3em;
+  width: 3em;
+  border-color:var(--primary-color);
+  border-bottom-color:transparent
+}
+.preventa_header .header_label{
+  padding-right:0;
+}
+
+.preventa_header .message_status{
+  margin-bottom: 0.5em;
+}
+.preventa_header .message_status.danger{
+  color:red;
+  background-color: transparent !important;
+
+}
+.preventa_header .message_status.success{
+  color:green;
+  background-color: transparent !important;
+}
+.preventa_box_container .float_box{
+  display: flex;
+}
+.preventa_box_container .float_box .value{
+  margin-left: 0.5em;
+}
+.preventa_body .fecha{
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.preventa_body .value{
+}
+.preventa-item-meta{
+  list-style: none;
+  padding: 0;
+  margin: 0 !important; 
+  color: #666
+}
+.preventa-item-meta li{
+  padding: 0;
+  margin: 0 !important;
+}
+.preventa_summary .force_right{
+  text-align: right;
+}
+.preventa_body .force_right{
+  text-align: right;
+}
+.preventa_actions a{
+  width:100%;
+}
+.preventa_actions button{
+  width:100%;
+}
+.preventa_envio .tipo_operacion.op-1{
+  color:green;
+  font-weight: bold;
+}
+.preventa_envio .tipo_operacion{
+  color:red;
+  font-weight: bold;
+}
+.preventa_box_container .por_pagar.danger{
+  color:red;
+  background-color: transparent;
+}
+.preventa_box_container .por_pagar.success{
+  color:green;
+  background-color: transparent;
+}
+#modal_preventa_historial_abonos th{
+  text-align: left;
+}
+#modal_preventa_historial_abonos td{
+  text-align: left;
+}
+#modal_preventa_historial_abonos tfoot td{
+  border: none;
+}
+@media only screen and (max-width: 800px) {
+  .preventa_body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .preventa_body .info-tienda{
+    padding-bottom: 1em !important;
+  }
+  .preventa_body .imagen-producto{
+    padding-bottom: 1em !important;
+  }
+}
+
+/*** REASIGNAR TIENDA*/
+#preventa_asignar_tienda_confirm{
+  width: 200px;
+}
+#modal_preventa_reasignar_tienda #preventa_lista_sucursales{
+  height: 300px;
+  overflow: auto;
+}
+#modal_preventa_reasignar_tienda #preventa_lista_sucursales ul li{
+  list-style: none;
+  margin-left: 0;
+}
+.preventa_asignar_tienda_actions{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-top: 2em;
+}
+.preventa_asignar_tienda_actions button{
+  margin:0;
+}
+@media only screen and (max-width: 800px) {
+  .preventa_asignar_tienda_actions{
+    flex-direction: column-reverse;
+  }
+  .preventa_asignar_tienda_actions button{
+    margin-bottom: 0.5em;
+  }
+ 
+}
+
+.preventa_reasignar_checkmark{
+  border-radius: 50%;
+  width: 1.3em;
+  height: 1.3em;
+  background-color: var(--primary-color);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+.preventa_reasignar_checkmark_fake{
+  border-radius: 50%;
+  width: 1.2em;
+  height: 1.2em;
+  justify-content: center;
+  align-items: center;
+  display: block;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+  box-sizing: border-box;
+}
+.preventa_reasignar_checkmark span{
+  font-weight: 700 !important;
+  font-size: 0.8em;
+  height: auto;
+
+}
+
+
+#preventa_lista_sucursales .tienda_radio{
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+#preventa_lista_sucursales .radio_content input:checked ~ .li_tiendas {
+  background-color: #6e636334;
+}
+#preventa_lista_sucursales .radio_content input:checked ~ .li_tiendas .preventa_reasignar_checkmark {
+  display: flex;
+}
+#preventa_lista_sucursales .radio_content input:checked ~ .li_tiendas .preventa_reasignar_checkmark_fake {
+  display: none;
+}
+#sucursales_search-container{
+  display: flex;
+  align-items: end;
+  margin-bottom: 1em;
+}
+#sucursales_search-container label{
+  margin-right: 0.5em;
+  margin-bottom: 0em;
+  width: 170px;
+
+}
+
+#sucursales_search-container select{
+  height: 2.7em;
+  margin: 0;
+}
+#sucursales_search-container input{
+  margin: 0;
+}
+
+@media only screen and (max-width: 800px) {
+  
+  .preventa_reasignar_checkmark-wrapper{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .preventa_reasignar_checkmark{
+    width: 1em;
+    height: 1em;
+  }
+  .preventa_reasignar_checkmark_fake{
+    width: 1em;
+    height: 1em;
+  }
+  .preventa_reasignar_checkmark span{
+    font-size: 0.8em !important;
+  }
+}

@@ -1,0 +1,25 @@
+/**
+ * El CSS para la funcionalidad específica de las páginas
+ * públicas debe ser incluido en este archivo
+ */
+
+.gp_mensaje_sing_prod {
+    border: solid 1px #9f9fff;
+    background-color: #fcfcff;
+    color: blue;
+}
+
+.gp_mensaje_sing_prod a {
+    color: blue;
+    font-weight: bold;
+}
+
+.gp_w_c_v {
+    border: 1px solid #9fc2cf;
+    background-color: #f8fdff;
+    color: #0087b7;
+}
+
+.gp_w_c_v a {
+    color: #0087b7;
+}

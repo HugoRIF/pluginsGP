@@ -1,0 +1,120 @@
+/**
+ * El CSS para los plugins especiales para Planet Shop (Sucursales, facturacion,etc)
+*/
+.gp_has_border{
+  height: 100%;
+}
+.plugin_general_container{
+  height: fit-content;
+  margin: 0;
+}
+.plugin_general_container > .message-wrapper {
+  padding-top: .75em;
+  padding-bottom: .75em;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+.plugin_general_header-container{
+  width: 100%;
+  display: flex;
+  margin:0 1.3em;
+  padding: 1em;
+  align-items: center;
+}
+.plugin_general-row{
+  flex-flow: row wrap;
+
+}
+/*Si es mobile se voltean de orden*/
+@media only screen and (max-width: 810px) {
+  .plugin_general-row{
+    flex-flow: column-reverse !important;
+  }
+}
+.plugin_general-form> * input.error {
+  border: 1px dashed red !important;
+}
+.plugin_general-form > * select.error {
+  border: 1px dashed red !important;
+}
+.plugin_general-form > * label.error {
+  color: red !important;
+  margin-top: -1em;
+
+}
+/***** LOADER: solo para los plugins de gp ***********/
+.loader-general {
+  width: 1em;
+  height: 1em;
+  border: 2px solid #FFF;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  margin: 0 auto;
+}
+.loader-general.blue {
+  width: 2em;
+  height: 2em;
+  border: 2px solid var(--primary-color);;
+  border-bottom-color: transparent;
+}
+@keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+} 
+
+.gp_badge{
+  margin-bottom: 1em;
+  margin-right: 0.5em;
+  line-height: 2.3;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  padding: 0 1.2em;
+  width: 150px;
+  color: white;
+}
+.gp_badge.error{
+  background: red;
+}
+.gp-flex-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slide-top {
+	-webkit-animation: slide-top 0.5s ease-in reverse ;
+	        animation: slide-top 0.5s ease-in reverse ;
+}
+
+/**
+ * ----------------------------------------
+ * animation slide-top
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+  }
+}
+@keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+  }
+}

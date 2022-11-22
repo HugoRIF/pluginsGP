@@ -1,0 +1,11 @@
+/**
+ * El CSS para la funcionalidad específica de las páginas
+ * del admin debe ser incluido en este archivo
+ */
+
+.price-fraction {
+    font-size: 0.6em;
+    top: -0.40em;
+    position: relative;
+    font-weight: normal;
+}

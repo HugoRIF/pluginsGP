@@ -1,0 +1,109 @@
+.compra_box_container{
+  padding: 1em 2em!important;
+  margin: 1em !important;
+  font-size: 0.9em;
+}
+
+.compras_loading{
+  display: flex;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+  margin:0 auto;
+  padding:0
+}
+.compras_loading .loader-general{
+  height: 3em;
+  width: 3em;
+  border-color:var(--primary-color);
+  border-bottom-color:transparent
+}
+.compra_header .header_label{
+  padding-right:0;
+}
+
+.compra_header .message_status{
+  margin-bottom: 0.5em;
+}
+.compra_header .message_status.danger{
+  color:red;
+  background-color: transparent !important;
+
+}
+.compra_header .message_status.success{
+  color:green;
+  background-color: transparent !important;
+}
+.compra_box_container .float_box{
+  display: flex;
+}
+.compra_box_container .float_box .value{
+  margin-left: 0.5em;
+}
+.compra_body .fecha{
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.compra_body .value{
+}
+.compra-item-meta{
+  list-style: none;
+  padding: 0;
+  margin: 0 !important; 
+  color: #666
+}
+.compra-item-meta li{
+  padding: 0;
+  margin: 0 !important;
+}
+.compra_summary .force_right{
+  text-align: right;
+}
+.compra_body .force_right{
+  text-align: right;
+}
+.compra_actions a{
+  width:100%;
+}
+.compra_actions button{
+  width:100%;
+}
+.compra_envio .tipo_operacion.op-1{
+  color:green;
+  font-weight: bold;
+}
+.compra_envio .tipo_operacion{
+  color:red;
+  font-weight: bold;
+}
+.compra_box_container .por_pagar.danger{
+  color:red;
+  background-color: transparent;
+}
+.compra_box_container .por_pagar.success{
+  color:green;
+  background-color: transparent;
+}
+#modal_compra_historial_abonos th{
+  text-align: left;
+}
+#modal_compra_historial_abonos td{
+  text-align: left;
+}
+#modal_compra_historial_abonos tfoot td{
+  border: none;
+}
+@media only screen and (max-width: 800px) {
+  .compra_body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .compra_body .info-tienda{
+    padding-bottom: 1em !important;
+  }
+  .compra_body .imagen-producto{
+    padding-bottom: 1em !important;
+  }
+}

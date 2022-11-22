@@ -1,0 +1,144 @@
+/**
+ * El CSS para las páginas de admin debe estar incluido en este
+ * archivo
+*/
+.gp_has_border{
+  height: 100%;
+}
+#coderedeemer_plugin_container{
+  height: fit-content;
+  margin: 0;
+}
+#coderedeemer_plugin_container > .message-wrapper {
+  padding-top: .75em;
+  padding-bottom: .75em;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+.crd_item-wrapper{
+  padding-bottom: 15px !important;
+}
+.crd_item-container{
+  margin: 0 !important;
+
+}
+.crd_item-header{
+  padding-bottom: 0 !important;
+  
+}
+.crd_item-carrusel{
+  padding-bottom: 0 !important;
+  max-height: 150px;
+}
+.crd_item-descripcion{
+  padding-bottom: 0 !important;
+ 
+}
+.crd_item-descripcion-collapsed{
+  padding-bottom: 0 !important;
+  overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   height: 50px;      /* fallback */
+   max-height: 50px;      /* fallback */
+   -webkit-line-clamp: 2; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+.crd_item-descripcion > *p{
+  margin:0;
+  padding: 0;
+}
+.una_linea{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+}
+/* external css: flickity.css */
+
+
+
+.crd-carousel-cell {
+  width: 66%;
+  min-height: 200px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+/* cell number */
+.crd-carousel-cell:before {
+  display: block;
+  text-align: center;
+  line-height: 200px;
+  font-size: 80px;
+  color: white;
+}
+.crd-carousel-cell-container{
+  position: relative;
+	height: 100%;
+	margin: 0 0 0 25px;
+	padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#coderedeemer_plugin_container > * .slider-nav-light .flickity-page-dots .dot {
+  border-color: var(--primary-color);
+}
+#coderedeemer_plugin_container > * .slider-nav-light .flickity-page-dots .dot.is-selected {
+  background-color: var(--primary-color);
+}
+#coderedeemer_plugin_container > * .slider-nav-light .flickity-prev-next-button {
+  color: var(--primary-color);
+}
+#coderedeemer_plugin_container > * .slider-nav-light .flickity-prev-next-button .arrow {
+  fill: var(--primary-color);
+}
+#coderedeemer_plugin_container > * .slider-nav-light .flickity-prev-next-button svg{
+  fill: var(--primary-color);
+}
+/* 
+.hover02 figure img {
+	width: 250px;
+	height: auto;
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+.hover02 figure:hover img {
+	width: 300px;
+} */
+
+.cdr-ver-mas-button{
+  margin:0;
+  padding: 0;
+  margin-top:1em;
+  font-size: 0.8em;
+  color: var(--primary-color);
+  text-align: left;
+  text-transform: none !important;
+}
+.crd-carousel-image{
+  height: 200px;
+  width: auto;
+  padding: 2em;
+}
+
+
+/**LISTA CONSULTA DE PRODUCTOS**/
+.crd-consulta-container{
+  margin: 1em !important;
+}
+.crd-consulta-container .image-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.crd-codigo{
+  font-size: 1.5em !important;
+  font-weight: bolder;
+  margin: .5em 0;
+  color:green;
+}
+.crd_copy_code{
+  cursor: pointer;
+  font-size: 1em !important;
+}

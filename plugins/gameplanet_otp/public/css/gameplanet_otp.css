@@ -1,0 +1,137 @@
+#gp_otp_billing_container{
+  margin:0;
+}
+.gp_otp_billing_wrapper{
+  padding:0;
+  padding-bottom: 1em;
+}
+.gp_otp_billing_wrapper .woocommerce-input-wrapper{
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+.gp_otp_billing_wrapper .gp_otp_input_wrapper{
+  display: flex;
+  width:70%;
+
+}
+.gp_otp_billing_wrapper .gp_otp_link_wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:30%;
+  height: 2.507em;
+  
+}
+.gp_otp_billing_wrapper .gp_otp_link_wrapper{
+  margin-bottom:1em;
+}
+@media only screen and (max-width: 800px) {
+  .gp_otp_billing_wrapper .woocommerce-input-wrapper{
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+ }
+  .gp_otp_billing_wrapper .gp_otp_input_wrapper{
+    width:100%;
+  }
+  .gp_otp_billing_wrapper .gp_otp_input_wrapper input{
+    margin-bottom: 0;
+  }
+  .gp_otp_billing_wrapper .gp_otp_link_wrapper{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width:100%;
+    height: 2.507em;
+    
+  }
+}
+.gameplanet_otp_phone_input_wrapper{
+  margin-bottom: 1em;
+}
+.gameplanet_otp_phone_input_wrapper .prefix{
+  position: absolute;
+  margin-top: 0.5em;
+  font-size: 0.97em;
+  padding-left: 5px;
+  left:0;
+}
+.gameplanet_otp_phone_input_wrapper input{
+  padding-left: 75px !important;
+  margin:0;
+}
+.gameplanet_otp_phone_input_wrapper label.error{
+  color:red;
+}
+
+#form_gp_opt_billing-container .form-row.flex{
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#form_gp_opt_billing-container .form-row.flex.actions{
+  margin-top:1em;
+  flex-direction: column;
+}
+#form_gp_opt_billing-container .form-row.flex.actions button{
+  margin:0;
+  margin-bottom: 0.5em;
+}
+.modal_gp_otp_billing_code_wrapper input{
+  margin:0;
+}
+.modal_gp_otp_billing_code_wrapper label.error{
+  color:red;
+}
+
+#gp_otp_phone-success{
+  color:rgb(0, 100, 0);
+}
+/********************/
+
+.gp_otp-number-code{
+  /*overflow: auto;*/
+  margin-bottom: 1.5em;
+}
+.gp_otp-number-code.slim{
+  /*overflow: auto;*/
+  margin-bottom: 0;
+
+}
+.gp_otp-number-code #inputs_container{
+  /*overflow: auto;*/
+  display: flex;
+  justify-content: center;
+}
+.gp_otp-number-code span{
+  font-size: 1.5em;
+  justify-content: center;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+.gp_otp-number-code div input:not(:last-child){
+  margin-right: 10px;
+
+}
+.gp_otp-number-code div input{
+  padding: 5px;
+  border-radius: 4px;
+  width:12%;
+
+}
+
+.gp_otp-number-code input.code-input {
+  font-size: 1.5em;
+  text-align: center;
+
+}
+.gp_otp-number-code div input:invalid{
+  box-shadow: none;
+
+}
+
+.gp_otp-number-code.slim input.code-input {
+  font-size: 0.97em !important;
+}

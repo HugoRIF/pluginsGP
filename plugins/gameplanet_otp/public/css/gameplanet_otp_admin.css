@@ -1,0 +1,94 @@
+:root{
+  --bs-body-bg:#f0f0f1;
+  --gp_float-box-bg:#fff;
+}
+h1{
+  font-size: 2em !important;
+  font-weight: 700 !important;
+}
+.container{
+  background-color: var(--gp_float-box-bg);
+  padding: 1em 2em;
+}
+.form-group{
+  margin-bottom: 1em;
+}
+.form-group input[type="checkbox"]{
+  margin-left: 1em;
+}
+.form-check-label{
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.otp_rule_box{
+  border: 1px solid rgba(128, 128, 128, 0.184);
+  padding:1em;
+  margin-top: 2em;
+}
+.rule_title{
+  font-size: 1em;
+  font-weight: 600;
+  position: absolute;
+  margin-top: -30px;
+  background: white;
+  z-index: 10;
+  padding: 0 10px;
+
+}
+small{
+
+    font-size: 11px !important;
+    line-height: 1 !important;
+
+}
+.active_otp_wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.switch-container #switch_active_otp{
+  display: none;
+}
+.switch-container .switch-label{
+    position: relative;
+    cursor: pointer;
+    margin: 0;
+    
+  }
+.switch-container .switch-label .switch-rail{
+    transition: all 0.2s ease-in-out;
+    width: 60px;
+    height: 30px;
+    background: #e3342f;
+    border-radius: 50px;
+    overflow: hidden;
+   
+  }
+.switch-container .switch-label .switch-rail  .switch-slider{
+    transition: all 0.2s ease-in-out;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+.switch-container #switch_active_otp:checked + .switch-label .switch-rail{
+      transition: all 0.2s ease-in-out;
+      background: #38c172;
+     
+}
+
+.switch-container #switch_active_otp:checked + .switch-label .switch-rail .switch-slider{
+  transition: all 0.2s ease-in-out;
+  transform: translateX(30px);
+}   
+
+.toolbar button span{
+  font-size: 1em;
+  display: flex;
+  padding: 2px;
+}

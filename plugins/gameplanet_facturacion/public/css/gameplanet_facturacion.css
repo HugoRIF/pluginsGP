@@ -1,0 +1,19 @@
+/**
+ * El CSS para las páginas de admin debe estar incluido en este
+ * archivo
+*/
+
+.facturacion_descrip-text{
+  text-align: justify;
+}
+.facturacion_descrip-ul{
+  padding: 0 1.5em !important;
+}
+.facturacion_descrip-a{
+  color: #0087b7
+}
+.facturacion_enlace_zip{
+  color: #7a9c59;
+  font-weight: bold;
+
+}

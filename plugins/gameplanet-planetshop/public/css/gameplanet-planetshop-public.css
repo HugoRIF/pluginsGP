@@ -1,0 +1,704 @@
+/**
+ * El CSS para la funcionalidad específica de las páginas
+ * públicas debe ser incluido en este archivo
+ */
+
+
+/** widget **/
+
+.gp-disponibilidad-container {
+    padding: 1em;
+    border: 0.1em solid #cfcfcf;
+}
+
+
+/** generales **/
+
+.pac-container {
+    z-index: 1051 !important;
+    /* position: fixed !important; */
+}
+
+.gp_error {
+    border: solid 1px #ff9999;
+    background-color: #ffe9e9;
+    padding: 1em 1em 0em 1em;
+    margin-bottom: 1em;
+    color: red;
+}
+
+.gp-show-password-input {
+    position: absolute;
+    /* right: 0;
+    margin: 1% 5% 0 0; */
+    right: 2em;
+    margin-top: 0.4em;
+}
+
+#gp_shipping_error {
+    color: red;
+}
+
+.gp_shipping_error_input {
+    border: 1px solid red !important;
+}
+
+
+/** modales **/
+
+.gp_modal_tiendas,
+.gp_modal_tienda {
+    height: 25em;
+    overflow: auto;
+}
+
+.gp_modal_domicilio li {
+    list-style: none;
+}
+
+.li_tiendas:hover {
+    background-color: #6e63631a;
+    cursor: pointer;
+}
+
+.li_tiendas,
+.li_disponibilidad {
+    padding: 1em;
+    margin: 0;
+}
+
+.li_sin_inventario {
+    padding: 1em;
+    margin: 0;
+    /* background-color: #f7f7f7; */
+}
+
+.li_sin_inventario span,
+.li_sin_inventario a,
+.li_sin_inventario h3 {
+    color: #CCCCCC;
+}
+
+.hr_gp {
+    border-top: 1px solid #0000003b;
+    opacity: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#status_disponibilidad_tienda h1,
+#status_disponibilidad_tienda h2,
+#status_disponibilidad_tienda h3 {
+    margin-bottom: 0px;
+}
+
+.gp_font_size_p8 {
+    font-size: 0.8em;
+}
+
+.gp_btn_tienda_fav {
+    cursor: pointer;
+}
+
+.gp_color_gris {
+    color: #b1b1b1;
+}
+
+.gp_fs_p8em {
+    font-size: 0.8em;
+}
+
+.gp_fs_p7em {
+    font-size: 0.7em;
+}
+
+.gp_fs_p6em {
+    font-size: 0.6em;
+}
+
+.gp_fs_1p2em {
+    font-size: 1.2em;
+}
+
+.gp_margin_top_3em {
+    margin-top: 3em;
+}
+
+li.li_disponibilidad a:hover,
+li.li_tiendas a:hover,
+.gp_underline {
+    text-decoration: underline;
+}
+
+.gp_h3_disponibilidad {
+    margin-bottom: 0px;
+}
+
+#gp_single_product_button {
+    display: block;
+    width: 100% !important;
+    /* line-height: 2.8 !important; */
+    line-height: 3.1 !important;
+    font-weight: 500;
+    /* border-radius: 99px; */
+}
+
+.button.alt:hover {
+    /* background-color: #fa8900 !important; */
+    background-color: #ffa31c !important;
+    box-shadow: 0 0 0 0 black;
+}
+
+.button.alt {
+    /* background-color: #ffa31c !important; */
+    background-color: #fa8900 !important;
+    color: white !important;
+    font-weight: unset;
+    text-transform: none;
+    /* border-radius: 99px !important; */
+}
+
+.qc-add-to-cart-button.button.alt {
+    display: none;
+}
+
+.single_add_to_cart_button.button.alt {
+    display: none;
+}
+
+#gp_single_product_button.gp_single_product_button_disable {
+    background-color: #fa8900;
+    color: white;
+    pointer-events: none;
+    font-weight: unset;
+    text-transform: none;
+}
+
+#gp_mensaje {
+    color: #999999 !important;
+    font-size: 0.8em;
+}
+
+
+/* .gp_thumbnail {
+    width: 52px;
+    height: 45px;
+    display: inline-table;
+    padding-right: 7px;
+    vertical-align: middle;
+} */
+
+.product-quantity {
+    text-align: center;
+}
+
+.gp_btn_ship {
+    color: #334862 !important;
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+.gp_btn_ship:hover {
+    color: #000 !important;
+}
+
+.gp_overflow_tienda {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+.gp_overflow_direccion {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+.gp_marcar {
+    color: red;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+
+/*! css checkout !*/
+
+.disabled {
+    pointer-events: none;
+}
+
+.gp_list {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.gp_list p {
+    display: list-item;
+    margin: 0;
+}
+
+.gp_datos_cuenta {
+    border: solid 1px yellow;
+    background-color: #FFFFEF;
+    padding: 1em 1em 1em 1em;
+    margin: 0.5em 1em 2em 1em;
+    color: black;
+}
+
+.gp_ma_datos_cuenta {
+    border: solid 1px yellow;
+    background-color: #FFFFEF;
+    padding: 1em 1em 1em 1em;
+    margin: 0em 0em 2em 0em;
+    color: black;
+}
+
+.gp_detalles_apartado {
+    background-color: #dce8d0;
+    color: #7a9c59;
+    margin: 0.5em 1em 2em 1em;
+    border: 1px solid;
+}
+
+.gp_detalles_apartado h4 {
+    color: #7a9c59;
+}
+
+.gp_datos_cuenta a {
+    text-decoration: underline;
+}
+
+.variation {
+    text-transform: none !important;
+}
+
+.variation-_gp_nota {
+    color: red;
+    font-weight: bold;
+}
+
+.variation-_gp_cambio {
+    color: green;
+}
+
+.variation-_gp_entrega_estimada {
+    color: green !important;
+    font-weight: bold;
+}
+
+.variation-_gp_monto_minimo {
+    color: green !important;
+    font-weight: bold;
+}
+
+.variation-_gp_costo {
+    color: #0087b7 !important;
+    font-weight: bold;
+}
+
+.variation-_gp_nombre_garantia {
+    color: #6c6c6c !important;
+    font-weight: bold;
+    margin-top: 1em;
+}
+
+.variation-_gp_costo_garantia {
+    color: #6c6c6c !important;
+    font-weight: bold;
+}
+
+form[name=checkout] div.clear {
+    box-shadow: 0px 0px 15px 2px #d3d3d3;
+    padding: 1em 1em 1em 1em;
+    margin: 0.5em 1em 2em 1em;
+}
+
+form[name=checkout] div.woocommerce-billing-fields {
+    padding-top: 0;
+    border-top: 0px solid #ddd;
+}
+
+#mailpoet_woocommerce_checkout_optin_field * {
+    font-weight: unset !important;
+    color: #818181;
+}
+
+.gp_entrega_en {
+    color: green !important;
+    font-weight: bold;
+}
+
+
+/*! css menú !*/
+
+
+/* #gp_tienda,
+#gp_address {
+    text-transform: none;
+}
+
+.gp_tienda_fav,
+.gp_telefono,
+.gp_direccion {
+    text-underline-offset: 2px;
+}
+
+.gp_tienda_fav:hover,
+.gp_telefono:hover,
+.gp_direccion:hover {
+    text-decoration: underline;
+} */
+
+
+/* .gp_list_menu span {
+    color: white;
+} */
+
+
+/*! colores !*/
+
+.gp_c_b_orange {
+    color: #f9c361;
+}
+
+.gp_c_b_green {
+    color: green !important;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.gp_c_b_red {
+    color: red !important;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.gp_c_b_blue {
+    color: #0087b7 !important;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.gp_c_verde {
+    color: green !important;
+}
+
+.gp_c_rojo {
+    color: red !important;
+}
+
+.gp_c_gris {
+    color: #666675 !important;
+}
+
+
+/*! shipping info !*/
+
+.gp_map {
+    border: solid 1px #c9c9c9 !important;
+    height: 20em !important;
+}
+
+.gp-p-meta {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.wc-item-meta {
+    margin-top: 0 !important;
+}
+
+
+/*! order (my-account) */
+
+.gp_status {
+    margin-bottom: 1em;
+    margin-right: 0.5em;
+    line-height: 2.3;
+    font-size: 1em;
+    text-align: center;
+    border-radius: 99px;
+    padding: 0.2em 1.2em;
+    width: 150px;
+}
+
+.gp_status.default {
+    background-color: rgb(236, 234, 234);
+    color: rgb(180, 180, 180);
+}
+
+.gp_procesando {
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+}
+
+.gp_status_verde {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+}
+
+.gp_status_azul {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.gp_status_naranja {
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+}
+
+.gp_status_rojo {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.gp_item_status_rojo {
+    color: red !important;
+    font-weight: bold;
+}
+
+.gp_item_status_verde {
+    color: green !important;
+    font-weight: bold;
+}
+
+.gp_item_status_azul {
+    color: #0087b7 !important;
+    font-weight: bold;
+}
+
+.gp_direccion_guardada {
+    margin-top: 2em !important;
+    margin-bottom: 1em !important;
+}
+
+.gp_autocompletado_tag {
+    font-size: 0.8em;
+}
+
+#_gp_autocompletado {
+    margin-bottom: 0;
+}
+
+ol.woocommerce-OrderUpdates.commentlist.notes li {
+    border: 1px solid #9fc2cf !important;
+    background-color: #f8fdff !important;
+    color: #0087b7 !important;
+}
+
+.gp_b_blue {
+    color: #0087b7 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+#gp_apartalo_con {
+    color: green !important;
+}
+
+.gp_fecha_lanzamiento {
+    margin-bottom: 1em;
+    margin-right: 0.5em;
+    line-height: 2.3;
+    font-size: 0.5em;
+    text-align: center;
+    border-radius: 10px;
+    padding: 0.2em 1.2em;
+    width: 150px;
+}
+
+.button.wc-forward {
+    /* border-radius: 99px !important; */
+    text-transform: none;
+}
+
+.button.checkout.wc-forward:hover {
+    /* background-color: #fa8900 !important; */
+    background-color: #ffa31c !important;
+    box-shadow: 0 0 0 0 black;
+}
+
+.button.checkout.wc-forward {
+    /* background-color: #ffa31c !important; */
+    background-color: #fa8900 !important;
+    color: white !important;
+    font-weight: unset;
+    text-transform: none;
+    /* border-radius: 99px !important; */
+}
+
+.gp_text_sep {
+    text-transform: none !important;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.gp_link_ubicacion {
+    display: inline-block;
+    margin-bottom: 1em !important;
+}
+
+.gp_de_ubicacion {
+    color: #555555;
+    font-weight: bold;
+}
+
+.gp_mensaje_de {
+    margin-top: 2em;
+    margin-bottom: 0;
+    font-size: 0.7em;
+    text-align: right;
+}
+
+.gp_tu_ubicacion_de {
+    font-size: 0.8em;
+}
+
+.gp_de_h2 {
+    margin-top: 1em;
+}
+
+
+/* temporal */
+
+.gp_total_price {
+    font-size: 1.3em !important;
+    color: black !important;
+}
+
+
+/* p.price.product-page-price.price-on-sale.gp_precio_ps {
+    font-size: 0.6em !important;
+} */
+
+span.price p.price.product-page-price.price-on-sale {
+    /* font-size: 1em !important; */
+}
+
+span.price .price.product-page-price.price-on-sale.gp_precio_ps {
+    font-size: 0.8em !important;
+}
+
+.gp_fw-b {
+    font-weight: bold;
+}
+
+.gp_mt-1em {
+    margin-top: 1em;
+}
+
+.gp_margin0 {
+    margin: 0%;
+}
+
+.gp_margin0p3 {
+    margin-bottom: 0.3em;
+}
+
+
+/** garantias **/
+
+.gp_dashicon_garantia {
+    font-size: 1.3em;
+    width: auto;
+    height: auto;
+    margin-right: 0.2em;
+}
+
+.gp_garantia_row {
+    margin-bottom: 1.5em;
+}
+
+.gp_garantia_name {
+    line-height: 0.7em;
+    margin-top: 0.35em;
+}
+
+.gp_col_1 {
+    margin: 0 0em 0 0em !important;
+}
+
+.gp_col_3 {
+    text-align: right;
+}
+
+.gp_modal_garantias {
+    height: 25em;
+    overflow: auto;
+}
+
+.gp_garantia_header {
+    background-color: #f0f0f0;
+    padding: 1em;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.gp_garantia_header>h3 {
+    margin: 0;
+}
+
+
+/*Es un badge(chip) igual a gp_status ¿lo hacemos una global?*/
+
+.gp_transaction_type {
+    margin-bottom: 1em;
+    margin-right: 0.5em;
+    line-height: 2.3;
+    font-size: 1em;
+    text-align: center;
+    border-radius: 99px;
+    padding: 0.2em 1.2em;
+    width: 150px;
+    background-color: rgb(236, 234, 234);
+    color: rgb(180, 180, 180);
+    white-space: nowrap;
+}
+
+.gp_transaction_type.domicilio {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.gp_transaction_type.apartado {
+    background-color: #056584;
+    color: white;
+    font-weight: bold;
+}
+
+.gp_transaction_type.tienda {
+    background-color: #094455;
+    color: white;
+    font-weight: bold;
+}
+
+.gp_transaction_type.credito {
+    background-color: #67B6D2;
+    color: white;
+    font-weight: bold;
+}
+
+
+/*resonsive mobile*/
+
+@media only screen and (max-width: 800px) {
+    .woocommerce-MyAccount-orders .woocommerce-orders-table__header-order-actions {
+        display: none;
+    }
+    .woocommerce-MyAccount-orders .woocommerce-orders-table__cell-order-actions {
+        display: none;
+    }
+    .woocommerce-MyAccount-orders .gp_status {
+        white-space: nowrap;
+        font-size: 0.8em;
+    }
+    .woocommerce-MyAccount-orders .gp_transaction_type {
+        font-size: 0.8em;
+    }
+}
