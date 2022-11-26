@@ -47,14 +47,17 @@ if (isset($_POST['submit_btn'])) {
 	}
 }
 
-
+$data_report = resporte_IP();
 
 ?>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script>
+	const data_report = <?php echo json_encode($data_report['data']['records'])?>;
 
+</script>
 <div class="wrap gp_opt_admin">
 	<h1><?php esc_html_e('Gameplanet OTP'); ?></h1>
 
@@ -215,44 +218,20 @@ if (isset($_POST['submit_btn'])) {
 					</select>
 				</div>
 				<div class="container">
-					<table id="example" class="" style="width:100%">
+					<table id="example" class="table table-striped"  style="width:100%">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Position</th>
-					<th>Office</th>
-					<th>Age</th>
-					<th>Start date</th>
-					<th>Salary</th>
+					<th>Dirección IP</th>
+					<th>Intentos</th>
+					<th>Tiempo de Bloqueo</th>
+					<th>Creado</th>
+					<th>Actualizado</th>
+					<th>Acciones</th>
 					</tr>
 				</thead>
 			<tbody>
 				
-				<tr>
-					<td>Shad Decker</td>
-					<td>Regional Director</td>
-					<td>Edinburgh</td>
-					<td>51</td>
-					<td>2008-11-13</td>
-					<td>$183,000</td>
-					</tr>
-				<tr>
-					<td>Michael Bruce</td>
-					<td>Javascript Developer</td>
-					<td>Singapore</td>
-					<td>29</td>
-					<td>2011-06-27</td>
-					<td>$183,000</td>
-					</tr>
-				<tr>
-					<td>Donna Snider</td>
-					<td>Customer Support</td>
-					<td>New York</td>
-					<td>27</td>
-					<td>2011-01-25</td>
-					<td>$112,000</td>
-					</tr>
-				</tbody>
+			</tbody>
 			
 			</table>
 				</div>

@@ -279,14 +279,12 @@ class Gameplanet_Admin {
 			)),
 			'headers' => array(
 				'Content-Type' => 'application/json',
-				// 'data-jwt-master' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InRpbWVfdG9fbGl2ZSI6IjM2MDAiLCJpc19tYXN0ZXIiOnRydWV9LCJpYXQiOjE2NDc2MzIyNTYsImV4cCI6MTk2Mjk5MjI1Nn0.k08KyaU5H4uOMDVVJHIv6RtarvjrjVVhdS_VpDs4EG8'
 				'data-jwt-master' => get_option('data-jwt-master')
 			)
 		);
 		$this->gp_admin_logs('gp_authenticate_user', 'Email',  $username);
 
 		// validamos que el usuario tenga cuenta GP
-		// $url = "https://api.gameplanet.com/v1/customer/login";
 		$url = get_option('ruta_gameplanet') . "customer/login";
 		$this->gp_admin_logs('gp_authenticate_user', 'Endpoint (POST)', $url);
 

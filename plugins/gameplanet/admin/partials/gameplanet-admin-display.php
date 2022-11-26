@@ -118,7 +118,6 @@ $tablename = 'gamers_portabilidad';
 
 		</div>
 		<div class="clear"></div>
-
 		<input type="submit" value="Guardar Todo" name="submit_btn">
 	</form>
 </div>
@@ -169,7 +168,6 @@ if(isset($_POST['submit_btn'])){
 	if('' != $_POST["user-link_gp"]){
 		update_option( 'user-link_gp', $_POST["user-link_gp"] );
 	} 
-
 	if('' != $_POST["pass-link_gp"]){
 		update_option( 'pass-link_gp', $_POST["pass-link_gp"] );
 	} 
@@ -185,7 +183,6 @@ if(isset($_POST['submit_btn'])){
 	if('' != $_POST["password_twilio"]){
 		update_option( 'password_twilio', $_POST["password_twilio"] );
 	} 
-
 	?>
 	<div class="updated notice">
 		<p>

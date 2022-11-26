@@ -29,355 +29,36 @@ class Widget_single_product_ps extends WP_Widget {
      * @param array $instance Saved values from database.
      */
     public function widget( $args, $instance ) {
-        global $product;
-        $upc = $product->get_sku();
-        $lat = _GP_GEO_LAT;
-        $lng = _GP_GEO_LNG;
-        $tienda_fav = _GP_TIENDA_DEFAULT_ID;
-        $id_cliente = 0;
-        $direccion_larga = _GP_GEO_ADDRESS_LONG;
-
-        $bandera_domicilio = false;
-        $bandera_tienda = false;
-
-        extract( $args );
-        
-        if(isset($_COOKIE['_gp_geo_address_long'])){
-            $direccion_larga = urldecode(filter_var($_COOKIE['_gp_geo_address_long'], FILTER_SANITIZE_ENCODED));
-        }
-
-        if(isset($_COOKIE['_gp_geo_lat'])){
-            $lat = filter_var($_COOKIE['_gp_geo_lat'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        }
-
-        if(isset($_COOKIE['_gp_geo_lng'])){
-            $lng = filter_var($_COOKIE['_gp_geo_lng'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        }
-
-        if(isset($_COOKIE['_gp_tienda_favorita_id'])){
-            $tienda_fav = filter_var($_COOKIE['_gp_tienda_favorita_id'], FILTER_SANITIZE_ENCODED);
-        }
-
-        if(is_user_logged_in()){
-            $user = get_userdata(get_current_user_id());
-            if(isset($user->id_gp)){
-                $id_cliente  = $user->id_gp;
-            }
-        }
-
-        echo $before_widget;
-
-        $response = $this->gp_wc_disponibilidad(1, "cache", $upc, $lat, $lng, $tienda_fav, $id_cliente);
 
         echo "
-            <script>
-                let gp_disponibilidad_var = {$response};
-            </script>
-        ";
-        echo "
-            <div class='gp-disponibilidad-container'>
-                <div >
-                    <div id='gp_content' class='gp_hi' role='main'>
-                        <div class='row row-main'>
-                            <div class='large-12 col' style='padding-bottom: 0px;'>
-                                <div class='pr-field-wrap'>
-        ";
-        
-
-        $ext_auth = json_decode($response, true);
-        if($ext_auth['estatus']){
-            foreach($ext_auth['tipos_envio'] as $key => $value){
-                // error_log(print_r($value, true));
-                $html = '';
-                $gp_radio = '';
-                $id_input_radio = '';
-                $id_modal = '';
-                $href_modal = '';
-                $nombre_modal = '';
-                $id_tiempo_entrega = '';
-                $id_costo_envio = '';
-                $direccion_domicilio = '';
-                $id_mensaje = '';
-                $mensaje = '';
-                //*-- inputs id --
-                $i_id_id_tienda = '';
-                $i_id_nombre_tienda = '';
-                $i_id_id_tipo_envio = '';
-                $i_id_id_subtipo_envio = '';
-                $i_id_entrega_estimada = '';
-                $i_id_cantidad = '';
-                $i_id_shipping = '';
-                //*-- inputs values --
-                $id_tienda = '';
-                $nombre_tienda = '';
-                $id_tipo_envio = '';
-                $id_subtipo_envio = '';
-                $entrega_estimada = '';
-                $cantidad = '';
-                $shipping = '';
-                //*----
-                if($value['estatus']){
-                    if(count($value['subtipo']['almacenes']) == 0){
-                        continue;
-                    }
-                    $lista = array(
-                        'Entrega ' => ''
-                    );
-                    $entrega_estimada = str_replace(array_keys($lista), $lista, $value['subtipo']['entrega_estimada']);
-                    foreach($value['subtipo']['almacenes'] as $key => $valor){
-                        if($key == 0){
-                            $id_tienda = $valor['id_sucursal'];
-                            $nombre_tienda = $valor['nombre'];
-                            $id_tipo_envio = $value['id'];
-                            $id_subtipo_envio = $value['subtipo']['nombre'];
-                            $entrega_estimada = $entrega_estimada;
-                            $cantidad = $valor['cantidad'];
-                            $shipping = $value['subtipo']['shipping']['valor'];
-                            $monto_minimo = $value['subtipo']['monto_minimo']['valor'];
-                            $monto_minimo_mensaje = $value['subtipo']['monto_minimo']['mensaje'];
-                            break;
-                        }
-                    }
-
-                    if($value['id'] == 'domicilio'){
-                        $nombre_tienda = '';
-                        $bandera_domicilio = true;
-                        $id_label = 'domicilio_seleccionado';
-                        $gp_radio .= 'gp_radio_recibir_domicilio';
-                        $id_input_radio = 'domicilio';
-                        $id_modal = 'gp_recibir_domicilio';
-                        $href_modal = 'modal_cambiar_direccion';
-                        $nombre_modal = 'Cambiar dirección';
-                        $id_tiempo_entrega = 'gp_domicilio_tiempo_entrega';
-                        $id_costo_envio = 'gp_domicilio_shipping';
-                        $direccion_domicilio = "<span class='gp_single_product_direccion'>{$direccion_larga}<br/></span>";
-                        $id_mensaje = 'gp_mensaje_domicilio';
-
-                        $i_id_id_tienda = 'domicilio_id_tienda';
-                        $i_id_nombre_tienda = 'domicilio_nombre_tienda';
-                        $i_id_id_tipo_envio = 'domicilio_id_tipo_envio';
-                        $i_id_id_subtipo_envio = 'domicilio_id_subtipo_envio';
-                        $i_id_entrega_estimada = 'domicilio_entrega_estimada';
-                        $i_id_cantidad = 'domicilio_cantidad';
-                        $i_id_shipping = 'domicilio_shipping';
-
-                        $i_id_gp_apartalo = 'gp_domicilio_apartalo';
-                    } elseif($value['id'] == 'tienda' && $value['estatus']){
-                        // if(count($value['subtipo']['almacenes']) == 0){
-                        //     continue;
-                        // }
-                        $bandera_tienda = true;
-                        $id_label = 'tienda_seleccionada';
-                        $gp_radio .= 'gp_radio_recibir_sucursal';
-                        $id_input_radio = 'tienda';
-                        $id_modal = 'gp_recibir_tienda';
-                        $href_modal = 'modal_recoger_tienda';
-                        $nombre_modal = 'Cambiar de sucursal';
-                        $id_tiempo_entrega = 'gp_sucursal_tiempo_entrega';
-                        $id_costo_envio = 'gp_sucursal_shipping';
-                        $id_mensaje = 'gp_mensaje';
-
-                        $i_id_id_tienda = 'sucursal_id_tienda';
-                        $i_id_nombre_tienda = 'sucursal_nombre_tienda';
-                        $i_id_id_tipo_envio = 'sucursal_id_tipo_envio';
-                        $i_id_id_subtipo_envio = 'sucursal_id_subtipo_envio';
-                        $i_id_entrega_estimada = 'sucursal_entrega_estimada';
-                        $i_id_cantidad = 'sucursal_cantidad';
-                        $i_id_shipping = 'sucursal_shipping';
-
-                        $i_id_gp_apartalo = 'gp_sucursal_apartalo';
-                    }
-                    if($value['estatus_mensaje_print']){
-                        $mensaje = $value['estatus_mensaje'];
-                    }
-
-                    $mensaje_monto_minimo = '';
-                    if(str_starts_with($upc, 'P')){
-                        $mensaje_monto_minimo = "<span class='gp_c_b_green'><span>{$monto_minimo_mensaje}</span></span><br/>";
-                        $html .= "
-                            <input type='hidden' name='{$i_id_gp_apartalo}' id='{$i_id_gp_apartalo}' value='{$monto_minimo}'>
-                        ";
-                    }
-                    $html .= "
-                        <input type='hidden' name='{$i_id_id_tienda}' id='{$i_id_id_tienda}' value='{$id_tienda}'>
-                        <input type='hidden' name='{$i_id_nombre_tienda}' id='{$i_id_nombre_tienda}' value='{$nombre_tienda}'>
-                        <input type='hidden' name='{$i_id_id_tipo_envio}' id='{$i_id_id_tipo_envio}' value='{$id_tipo_envio}'>
-                        <input type='hidden' name='{$i_id_id_subtipo_envio}' id='{$i_id_id_subtipo_envio}' value='{$id_subtipo_envio}'>
-                        <input type='hidden' name='{$i_id_entrega_estimada}' id='{$i_id_entrega_estimada}' value='{$entrega_estimada}'>
-                        <input type='hidden' name='{$i_id_cantidad}' id='{$i_id_cantidad}' value='{$cantidad}'>
-                        <input type='hidden' name='{$i_id_shipping}' id='{$i_id_shipping}' value='{$shipping}'>
-                        <span id='{$gp_radio}'>
-                            <input type='radio' id='{$id_input_radio}' name='entrega' value='{$id_input_radio}'>
-                            <label for='{$id_input_radio}' id='{$id_label}'>{$value['nombre']}</label>
-                        </span>
-                        <p>
-                            <a id='{$id_modal}' href='#{$href_modal}' class='gp_underline' target='_self'>{$nombre_modal}</a><br/>
-                            {$mensaje_monto_minimo}
-                            <span class='gp_c_b_green'><span id='{$id_tiempo_entrega}'>{$value['subtipo']['entrega_estimada']}</span></span><br/>
-                            <span class='gp_c_b_blue'><span id='{$id_costo_envio}'>{$value['subtipo']['shipping']['mensaje']}</span></span><br/>
-                            {$direccion_domicilio}
-                        </p>
-                        <div id='{$id_mensaje}'>
-                            <p>{$mensaje}</p>
-                        </div>
-                    ";
-
-                    //!
-                    $prod_id = $product->get_id();
-                    $cats = get_the_terms( $prod_id, 'product_cat' );
-                    $categorias = '';
-                    if($cats){
-                        $arreglo = [];
-                        foreach ($cats  as $term  ) {
-                            $product_cat_name = $term->name;
-                            array_push($arreglo, $product_cat_name);
-                            // break;
-                        }
-                        $categorias = implode(' - ', $arreglo);
-                    }
-                    
-                    // $tags = get_the_terms( $prod_id, 'product_tag' );
-                    $tags = get_the_terms( $prod_id, 'pa_plataforma' );
-                    $plataforma = '';
-                    if($tags){
-                        $arreglo = [];
-                        foreach ($tags  as $term  ) {
-                            $product_tag_name = $term->name;
-                            array_push($arreglo, $product_tag_name);
-                            // break;
-                        }
-                        $plataforma = implode(' - ', $arreglo);
-                    }
-                    
-                    $cond = get_the_terms( $prod_id, 'pa_condicion' );
-                    $condicion = '';
-                    if($cond){
-                        $arreglo = [];
-                        foreach ($cond  as $term  ) {
-                            $product_tag_name = $term->name;
-                            array_push($arreglo, $product_tag_name);
-                            // break;
-                        }
-                        $condicion = implode(' - ', $arreglo);
-                    }
-                    //!
-
-                    $sku_prod = $product->get_sku();
-                    
-
-                    $inp_lat = _GP_GEO_LAT;
-                    if(isset($_COOKIE["_gp_geo_lat"])){
-                        $inp_lat = htmlspecialchars($_COOKIE["_gp_geo_lat"]);
-                    }
-                    
-                    $inp_lng = _GP_GEO_LNG;
-                    if(isset($_COOKIE["_gp_geo_lng"])){
-                        $inp_lng = htmlspecialchars($_COOKIE["_gp_geo_lng"]);
-                    }
-
-                    
-                    
-                    echo $html;
-                }
-            }
-            $inp = "
-                <input type='hidden' name='sku' id='sku' value='{$sku_prod}'>
-                <input type='hidden' name='categoria' id='categoria' value='{$categorias}'>
-                <input type='hidden' name='condicion' id='condicion' value='{$condicion}'>
-                <input type='hidden' name='plataforma' id='plataforma' value='{$plataforma}'>
-                <input type='hidden' name='lat' id='lat' value='{$inp_lat}'>
-                <input type='hidden' name='lng' id='lng' value='{$inp_lng}'>
-            ";
-
-            echo $inp;
-
-            if($bandera_domicilio || $bandera_tienda){
-                woocommerce_template_single_add_to_cart();
-            } else{
-                ?>
-                <div>
-                    <p>Por el momento este producto no lo ofrecemos a la venta en línea, puedes
-                        <?php if(!$bandera_preventa){?>
-                            consultar la <a href="#modal_disponibilidad" target="_self" rel="nofollow" class="gp_disponibilidad gp_underline">disponibilidad en sucursales</a> y/o 
-                        <?php } ?>
-                        buscar más productos relacionados o parecidos a este en nuestro <a class="gp_underline" href="<?php echo site_url('/catalogo/?wpf=base_productos&wpf_con-inventario=1'); ?>">catálogo</a>. Code: W-003</p>
-                </div>
-                <?php
-            }
-        } elseif($ext_auth['estatus_mensaje_print']){
-            $html = "
-                <p>
-                    {$ext_auth['estatus_mensaje']}
-                </p>
-            ";
-            echo $html;
-        } else{
-            $html = "
-                <p>
-                    Por el momento este producto lo tenemos agotado, puedes buscar más productos relacionados ó parecidos a este producto en nuestro catálogo. Code: W-012
-                </p>
-            ";
-            echo $html;
-        }
-        
-        echo "
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
-        ";
-        echo $after_widget;
-        $prod_id = $product->get_id();
-        $cond = get_the_terms( $prod_id, 'pa__gp_msi' );
-        $gp_msi = '';
-        if($cond){
-            $arreglo = [];
-            foreach ($cond  as $term  ) {
-                $product_tag_name = $term->name;
-                array_push($arreglo, $product_tag_name);
-                // break;
-            }
-            $gp_msi = implode(' - ', $arreglo);
-        }
-        if($gp_msi == 0){
-            if($product->is_on_sale()){
-                $precio = $product->get_sale_price();
-            } else{
-                $precio = $product->get_regular_price();
-            }
-            if($precio > 0){
-                $precio_html = get_woocommerce_currency_symbol() . number_format($precio, 2, '.', ',');
-                $plazos = array(12, 9, 6, 3); ?>
-                <div class="gp-disponibilidad-container msi_div">
-                    <label>Aplica meses sin intereses</label>
-                    <div class="msi_table">
-                        <table>
-                            <tr>
-                                <th>Plazo</th>
-                                <th>Por mes</th>
-                                <th>Costo de<br/>financiamiento</th>
-                                <th>Total</th>
-                            </tr>
-                            <?php foreach($plazos as $key => $mes){
-                                $costo_fin = $precio / $mes;
-                                $costo_fin_html = get_woocommerce_currency_symbol() . number_format($costo_fin, 3, '.', ',');
-                                echo "
-                                    <tr>
-                                        <td>{$mes} meses</td>
-                                        <td>{$costo_fin_html}</td>
-                                        <td>Gratis</td>
-                                        <td>{$precio_html}</td>
-                                    </tr>
-                                ";
-                            }?>                    
-                        </table>
+            <div id='gp_div_disp'>
+                <noscript>
+                    <div>
+                        Notamos que tu navegador no es compatible con JavaScript o lo tienes desactivado, por favor, asegúrate de utilizar JavaScript para una mejor experiencia.
                     </div>
+                </noscript>
+                <div style='margin-top: 5em;'>
+                    <center>
+                        <span class='loader-general blue'></span>
+                    </center>
                 </div>
-
-            <?php }
-        }
+            </div>
+            
+            <div id='gp_div_msi'>
+            </div>
+            <a id='btn_tiendas_disp' href='#modal_disp_tiendas' target='_self'></a>
+            <div id='modal_disp_tiendas' class='lightbox-by-id lightbox-content lightbox-white mfp-hide' style='max-width:45em ;padding:1.5em;'>
+            </div>
+            <a id='btn_disp_prod' href='#modal_disp_prod' target='_self'></a>
+            <div id='modal_disp_prod' class='lightbox-by-id lightbox-content lightbox-white mfp-hide' style='max-width:45em ;padding:1.5em;'>
+            </div>
+            <a id='btn_mensajes_errores' href='#modal_mensajes_errores' target='_self'></a>
+            <div id='modal_mensajes_errores' class='lightbox-by-id lightbox-content lightbox-white mfp-hide' style='max-width:45em ;padding:1.5em;'>
+                <h2>Lo sentimos</h2>
+                <div id='gp_mensaje_domicilio'>
+                </div>
+            </div>
+        ";
     }
  
     /**
@@ -435,31 +116,31 @@ class Widget_single_product_ps extends WP_Widget {
         $tipo_producto = 'fisico';
         $datos_domicilio = array(
             'express' => array(
-                'solicitud' => $cantidad,
+                'solicitud' => 1,
                 'metodo' => $metodo,
-                'cantidad_min' => 1
+                'cantidad_min' => $cantidad
             ),
             'sameday' => array(
-                'solicitud' => $cantidad,
+                'solicitud' => 1,
                 'metodo' => $metodo,
-                'cantidad_min' => 1
+                'cantidad_min' => $cantidad
             ),
             'nextday' => array(
-                'solicitud' => $cantidad,
+                'solicitud' => 1,
                 'metodo' => $metodo,
-                'cantidad_min' => 1
+                'cantidad_min' => $cantidad
             ),
             'standard' => array(
-                'solicitud' => $cantidad,
+                'solicitud' => 1,
                 'metodo' => $metodo,
-                'cantidad_min' => 1
+                'cantidad_min' => $cantidad
             )
         );
         $datos_tienda = array(
             'apartado' => array(
-                'solicitud' => $cantidad,
+                'solicitud' => 1,
                 'metodo' => $metodo,
-                'cantidad_min' => 1
+                'cantidad_min' => $cantidad
             )
         );
     
@@ -467,16 +148,16 @@ class Widget_single_product_ps extends WP_Widget {
             $tipo_producto = 'preventa';
             $datos_domicilio = array(
                 'preventa' => array(
-                    'solicitud' => $cantidad,
+                    'solicitud' => 1,
                     'metodo' => $metodo,
-                    'cantidad_min' => 1
+                    'cantidad_min' => $cantidad
                 )
             );
             $datos_tienda = array(
                 'preventa' => array(
-                    'solicitud' => $cantidad,
+                    'solicitud' => 1,
                     'metodo' => $metodo,
-                    'cantidad_min' => 1
+                    'cantidad_min' => $cantidad
                 )
             );
         }
@@ -490,6 +171,7 @@ class Widget_single_product_ps extends WP_Widget {
             }
         }
         $is_admin = current_user_can('administrator');
+        error_log("current_cliente:".$id_cliente);
         $request = array(
             "id_cliente" => $is_admin?0:$id_cliente,
             'productos' => array(
@@ -595,17 +277,39 @@ class Widget_single_product_ps extends WP_Widget {
                     }
                     
                     $env_domicilio = [];
+
+                    $bandera_domicilio_disp = false;
+                    $bandera_cantidad = false;
+                    $bandera_preventa = false;
+                    $bandera_preventa_var = false;
+                    $bandera_domicilio_almacenes = false;
+                    
+                    $precio_preventa_confirmada = false;
+                    $entrega_preventa_confirmada = false;
+                    if($tipo_producto == 'preventa'){
+                        if(isset($ext_auth['result'][0]['precio_final_confirmado']) && $ext_auth['result'][0]['precio_final_confirmado']){
+                            $precio_preventa_confirmada = true;
+                        }
+                        if(isset($ext_auth['result'][0]['fecha_lanzamiento_confirmada']) && !$ext_auth['result'][0]['fecha_lanzamiento_confirmada']){
+                            $entrega_preventa_confirmada = true;
+                        }
+                    }
+                    
                     foreach($domicilio as $key => $tipo){
+                        $bandera_domicilio_disp = true;
                         foreach($tipo['almacenes'] as $key => $almacen){
+                            $bandera_domicilio_almacenes = true;
                             if($almacen['cantidad'] >= $cantidad){
+                                $bandera_cantidad = true;
                                 if($tipo['subtipo'] == 'preventa'){
-                                    if(isset($ext_auth['result'][0]['precio_final_confirmado']) && $ext_auth['result'][0]['precio_final_confirmado']){
+                                    $bandera_preventa = true;
+                                    if($precio_preventa_confirmada){
                                         $entrega_estim = $tipo['disponibilidad']['entrega_estimada'];
-                                        if(isset($ext_auth['result'][0]['fecha_lanzamiento_confirmada']) && !$ext_auth['result'][0]['fecha_lanzamiento_confirmada']){
+                                        if($entrega_preventa_confirmada){
                                             $entrega_estim = 'no definida';
-                                            
                                             continue;
                                         }
+                                        $bandera_preventa_var = true;
                                         $env_domicilio += array(
                                             $tipo['subtipo'] =>  array(
                                                 'id_tipo_envio' => 'domicilio',
@@ -728,12 +432,46 @@ class Widget_single_product_ps extends WP_Widget {
                             'garantia_cart' => 1,
                         );
                     } else{
+                        //* no se tiene opción de envío
+                        if($bandera_domicilio_disp){
+                            if($bandera_domicilio_almacenes){
+                                if($bandera_cantidad){
+                                    if($bandera_preventa){
+                                        if($bandera_preventa_var){
+                                            //* entra como preventa, pero no está en lista de opciones [express, same day, etc]
+                                            $estatus_mensaje_txt = "Por el momento no hay disponibilidad de entrega a domicilio para este producto. <span style='color: white;'>Code: W-102</span>";
+                                        } else{
+                                            //* no se ha confirmado el precio final y/o fecha de lanzamiento
+                                            $estatus_mensaje_txt = "Por el momento este producto no ofrece la opción de 'Entrega a domicilio', debido a que el precio final y/o la fecha de lanzamiento no se han confirmado.<span style='color: white;'>Code: W-103</span>";
+                                        }
+                                    } else{
+                                        //* no es preventa
+                                        $estatus_mensaje_txt = 'Por el momento no hay disponibilidad de "Entrega a domicilio" para esta dirección de envío, te sugerimos <a href="#" id="gp_error_cambio_dir" class="gp_underline">cambiar la dirección de envío.</a> <span style="color: white;">Code: W-101</span>';
+                                    }
+                                } else{
+                                    //* sin envío a domicilio
+                                    $estatus_mensaje_txt = "Por el momento este producto no ofrece la opción de 'Entrega a domicilio'.<span style='color: white;'>Code: W-104</span>";
+                                }
+                            } else{
+                                if($tipo_producto == 'preventa' && !$precio_preventa_confirmada){
+                                    //* precio preventa no confirmada
+                                    // $estatus_mensaje_txt = "Por el momento no hay disponibilidad de entrega a domicilio para este producto. <span style='color: white;'>Code: W-105</span>";
+                                    $estatus_mensaje_txt = "Por el momento este producto no ofrece la opción de 'Entrega a domicilio', debido a que el precio final y/o la fecha de lanzamiento no se han confirmado.<span style='color: white;'>Code: W-105</span>";
+                                } else{
+                                    //* sin respuesta de almacenes
+                                    $estatus_mensaje_txt = 'Por el momento no hay disponibilidad de "Entrega a domicilio" para esta dirección de envío.</span> <span style="color: white;">Code: W-101.1</span>';
+                                }
+                            }
+                        } else{
+                            //* sin envío a domicilio
+                            $estatus_mensaje_txt = "Por el momento no hay disponibilidad de 'Entrega a domicilio' para este producto. <span style='color: white;'>Code: W-100</span>";
+                        }
                         $response['tipos_envio'][] = array(
                             'id' => "domicilio",
                             'nombre' => "Entrega a domicilio",
                             'estatus' => $estatus_domicilio,
-                            'estatus_mensaje_print' => 0,
-                            'estatus_mensaje' => "Este producto no está disponible a domicilio",
+                            'estatus_mensaje_print' => 1,
+                            'estatus_mensaje' => $estatus_mensaje_txt,
                             'subtipo' => null,
                             'shipping_cart' => 0,
                             'seguro_envio_cart' => 0,
@@ -810,7 +548,7 @@ class Widget_single_product_ps extends WP_Widget {
                         if(count($lista_almacenes) == 0 || $disp_global == 0){
                             $estatus_tienda = 0;
                             $bandera_nota = 0;
-                            $nota = 'Sin almacenes o productos';
+                            $nota = 'No sabemos si este producto volverá a estar disponible, ni cuándo.';
                         }
                         $disp_tienda[] = array(
                             'id' => "tienda",

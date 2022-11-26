@@ -89,6 +89,7 @@
         //gp_login_button();
 
         if ($("#gp_div_disp").length > 0) {
+            console.log('GP disponibilidad');
             let lat = _gp_geo_lat;
             let lng = _gp_geo_lng;
             if (gpGetCookie('_gp_geo_lat') && gpGetCookie('_gp_geo_lng')) {
@@ -104,11 +105,15 @@
             if (gpGetCookie('_gp_tienda_favorita_id')) {
                 tienda_fav = gpGetCookie('_gp_tienda_favorita_id');
             }
+            let nom_tienda_fav = _gp_tienda_default_nombre;
+            if (gpGetCookie('_gp_tienda_favorita_nombre')) {
+                nom_tienda_fav = gpGetCookie('_gp_tienda_favorita_nombre');
+            }
 
-            console.log(lat, lng);
             const request = new XMLHttpRequest();
             request.open('POST', var_ajax_disponibilidad.url, true);
             request.onload = function() {
+                console.log('GP disponibilidad ready');
                 const response = JSON.parse(this.response);
                 if (typeof response === 'object') {
                     $("#gp_div_disp").html(response[0]);
@@ -119,7 +124,7 @@
             }
             request.onerror = function() {
                 $("#gp_div_disp").html("<div class='gp-disponibilidad-container'><p>Algo salió mal, inténtelo más tarde. Code: WJS-200</p></div>");
-                console.log("Algo salio mal en la peticion", this.error);
+                console.log('GP disponibilidad error', this.error);
             }
             const data = new FormData();
             const producto = $("#id_ps").val();
@@ -129,21 +134,36 @@
             data.append('lng', lng);
             data.append('addrs_long', addrs_long);
             data.append('tienda_fav', tienda_fav);
+            data.append('nom_tienda_fav', nom_tienda_fav);
             request.send(data);
 
+            $('body').on('click', '#gp_error_cambio_dir', function(e) {
+                e.preventDefault();
+                console.log('GP click error cambio dir');
+                $("#gp_recibir_domicilio_w").click();
+            });
             $('body').on('click', '#gp_recibir_domicilio_w', function(e) {
+                console.log('GP click cambio dir');
                 e.preventDefault();
                 $("#gp_address").click();
             });
             $('body').on('click', '#gp_cambiar_sucursal', function(e) {
+                console.log('GP click cambio suc');
                 e.preventDefault();
                 $("#btn_tiendas_disp").click();
             });
+            $('body').on('click', '#test_link_click', function(e) {
+                console.log('GP click test');
+                e.preventDefault();
+                $(".gp_btn_ship").click();
+            });
             $('body').on('click', '#domicilio', function() {
+                console.log('GP click domicilio');
                 gpCookie('_gp_id_tipo_envio', 'domicilio', 1);
                 $("#gp_single_product_button").removeClass();
                 let condicion = $("#condicion").val();
                 if (condicion.startsWith('P')) {
+                    console.log('GP click domicilio preventa');
                     if ($("#gp_apartalo_con").length > 0) {
                         $("#gp_apartalo_con").html('Apártalo con <span class="woocommerce-Price-currencySymbol">$</span><bdi>' + $("#gp_domicilio_apartalo").val() + '</bdi>');
                     } else {
@@ -153,17 +173,21 @@
                     $("#gp_single_product_button").attr('name', 'qc-add-to-cart');
                     $("#gp_single_product_button_txt").text('Apártalo en preventa ahora');
                 } else {
+                    console.log('GP click domicilio producto');
                     var idRadio = $("input[name='garantia']:checked").val();
                     if (typeof(idRadio) != 'undefined') {
                         if (idRadio != 'gp_no_garantia') {
+                            console.log('GP click domicilio producto s/garantia selec');
                             $("#gp_single_product_button").addClass('qc-add-to-cart-button button alt');
                             $("#gp_single_product_button").attr('name', 'qc-add-to-cart');
                         } else {
+                            console.log('GP click domicilio producto c/garantia selec');
                             $("#gp_single_product_button").addClass('single_add_to_cart_button button alt');
                             $("#gp_single_product_button").attr('name', 'add-to-cart');
                         }
 
                     } else {
+                        console.log('GP click domicilio producto c/garantia no selec');
                         $("#gp_single_product_button").addClass('single_add_to_cart_button button alt');
                         $("#gp_single_product_button").attr('name', 'add-to-cart');
                     }
@@ -174,19 +198,38 @@
                     "max": $("#domicilio_cantidad").val(),
                     "min": 1
                 });
-                if ($("#gp_mensaje_domicilio p").is(':empty')) {
+                console.log('GP click domicilio contenido error', $("#gp_mensaje_domicilio").html());
+                let html_mensaje_dom = $("#gp_mensaje_domicilio").html();
+                let trim_mens_dom = html_mensaje_dom.trim();
+                if (trim_mens_dom == '' || trim_mens_dom == null) {
+                    console.log('GP click domicilio sin mensaje error');
+
                     $("#gp_single_product_button").prop("disabled", false);
                     $("#domicilio").prop("disabled", false);
                     $('#domicilio').show();
+                    console.log("GP show dom 1");
+                    $('#bloque_domicilio').show();
+
                 } else {
-                    $("#gp_single_product_button").prop("disabled", true);
+                    console.log('GP click domicilio con mensaje error');
+                    if ($('#tienda').length > 0) {
+                        console.log('GP click domicilio con mensaje error click tienda');
+                        $('#tienda').click();
+                        $("#gp_single_product_button").prop("disabled", false);
+                    } else {
+                        console.log('GP click domicilio con mensaje error no click tienda');
+                        $("#gp_single_product_button").prop("disabled", true);
+                    }
                     $("#domicilio").prop("disabled", true);
                     $('#domicilio').hide();
+                    $('#bloque_domicilio').hide();
                     $('#gp_radio_recibir_domicilio').addClass('disabled');
                     $('#domicilio').prop('checked', false);
                 }
+                console.log('GP click domicilio fin');
             });
             $('body').on('click', '#tienda', function() {
+                console.log('GP click sucursal');
                 let condicion = $("#condicion").val();
                 let texto = '';
                 if (condicion.startsWith('P')) {
@@ -197,7 +240,7 @@
                     }
                     $("#gp_single_product_button_txt").text('Apártalo en preventa ahora');
                 } else {
-                    $("#gp_single_product_button_txt").text('Apartar Ahora');
+                    $("#gp_single_product_button_txt").text('Recoger en Sucursal');
                 }
                 gpCookie('_gp_id_tipo_envio', 'tienda', 1);
                 $("#gp_single_product_button").removeClass();
@@ -210,6 +253,7 @@
                 });
                 $("#gp_single_product_button").prop("disabled", false);
                 $("#domicilio").prop("disabled", false);
+                console.log('GP click sucursal fin');
             });
 
             $('body').on('click', '#gp_single_product_button', function() {
@@ -226,8 +270,6 @@
                     var metaRadioName = $("input[name='garantia']:checked").attr('gp-gname');
                     if (metaRadio != 'gp_no_garantia') {
                         if ($('#domicilio').is(':checked')) {
-                            console.log('id radio', idRadio);
-                            console.log('meta radio', metaRadio);
                             $.extend(datos1, {
                                 'id_garantia': idRadio,
                                 'costo_garantia': metaRadio,
@@ -258,6 +300,7 @@
                 }
                 // gpCookie('_gp_data_test', encodeURIComponent(JSON.stringify(datos1)), 365);
                 gpCookie('_gp_data', encodeURIComponent(JSON.stringify(datos1)), 365);
+                console.log('GP data', datos1);
 
                 if (user_logged.check) {
                     // logged in
@@ -280,12 +323,17 @@
                 e.preventDefault();
                 $("#btn_disp_prod").click();
             });
+            $('body').on('click', '#psa_click_suc', function(e) {
+                e.preventDefault();
+                $("#disp_prod").click();
+            });
         }
 
     });
 
     //* funciones *//
     function gpFindeMe() {
+        console.log('GP gpFindeMe init');
         var options = {
             enableHighAccuracy: true,
             timeout: 5000,
@@ -295,32 +343,49 @@
         const status = document.querySelector('#ubicacion_status');
 
         function success(position) {
+            console.log('GP gpFindeMe success');
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
 
             status.textContent = '';
+            // obtiene lat lng y disponibilidad
             var address_txt = gpCodeLatLng(latitude, longitude);
 
             gpCookie('_gp_geo_lat', latitude, 365);
             gpCookie('_gp_geo_lng', longitude, 365);
+
+            const y = document.getElementsByClassName("gp_single_product_direccion");
+            if (y.length > 0) {
+                console.log('GP gpCodeLatLng init disp');
+                $('.mfp-bg.mfp-ready').click();
+                $("#gp_single_product_button").prop("disabled", true);
+                f_gp_disponibilidad_domicilio();
+            } else {
+                console.log('GP gpCodeLatLng no disp');
+            }
+
             $('.mfp-bg.mfp-ready').click();
 
+            console.log('GP gpFindeMe fin');
         }
 
         function error() {
+            console.log('GP gpFindeMe error');
             status.textContent = 'No es posible localizar su ubicación...';
         }
 
         if (!navigator.geolocation) {
+            console.log('GP gpFindeMe sin geolocalizador');
             status.textContent = 'Geolocalizacion no es soportada en su navegador...';
         } else {
+            console.log('GP gpFindeMe cargando');
             status.textContent = 'Cargando…';
             navigator.geolocation.getCurrentPosition(success, error, options);
         }
     }
 
     function gpCodeLatLng(lat, lng) {
-
+        console.log('GP gpCodeLatLng init');
         var address_short = "",
             address_long = "",
             locality = "",
@@ -401,19 +466,15 @@
                         x[i].innerText = "Enviar a " + decodeURIComponent(address_short); // Change the content
                     }
 
-                    const y = document.getElementsByClassName("gp_single_product_direccion");
                     const z = document.getElementsByClassName("gp_de_ubicacion");
                     for (var i = 0; i < z.length; i++) {
                         z[i].innerText = decodeURIComponent(address_long);
                     }
-                    if (y.length > 0) {
-                        $("#gp_single_product_button").prop("disabled", true);
-                        f_gp_disponibilidad_domicilio();
-                        $('.mfp-bg.mfp-ready').click();
-                        $("#domicilio").click();
-                        for (var i = 0; i < y.length; i++) {
-                            y[i].innerText = decodeURIComponent(address_long);
-                        }
+
+                    const y = document.getElementsByClassName("gp_single_product_direccion");
+                    for (var i = 0; i < y.length; i++) {
+                        console.log('GP cambiar dir 1', address_long);
+                        y[i].innerText = decodeURIComponent(address_long);
                     }
 
                 } else {
@@ -637,20 +698,24 @@
             gpCookie('_gp_geo_pc', postcode, 365);
 
             const x = document.getElementsByClassName("gp_direccion");
-            const y = document.getElementsByClassName("gp_single_product_direccion");
             // address_txt.textContent = address_short;
             for (var i = 0; i < x.length; i++) {
                 x[i].innerText = "Enviar a " + decodeURIComponent(address_short);
             }
+            const y = document.getElementsByClassName("gp_single_product_direccion");
             if (y.length > 0) {
+                $('.mfp-bg.mfp-ready').click();
                 $("#gp_single_product_button").prop("disabled", true);
                 f_gp_disponibilidad_domicilio();
-                $('.mfp-bg.mfp-ready').click();
-                $("#domicilio").click();
                 for (var i = 0; i < y.length; i++) {
+                    console.log('GP cambiar dir 2', address_long);
                     y[i].innerText = decodeURIComponent(address_long);
                 }
+            } else {
+                console.log('GP gp_direccion_guardada no disp');
+                $("#gp_single_product_button").prop("disabled", false);
             }
+
             const z = document.getElementsByClassName("gp_de_ubicacion");
             for (var i = 0; i < z.length; i++) {
                 z[i].innerText = decodeURIComponent(address_long);
@@ -860,7 +925,7 @@
     }
 
     function gp_direccion_guardada() {
-        console.log("<< entre 2");
+        console.log('GP gp_direccion_guardada init');
         $("#gp_single_product_button").prop("disabled", true);
         var atributo = $(".gp_btn_ship").attr('gp_dir');
         var elementos = atributo.split(';');
@@ -884,13 +949,17 @@
 
         const y = document.getElementsByClassName("gp_single_product_direccion");
         if (y.length > 0) {
+            console.log('GP gp_direccion_guardada disp');
             $('.mfp-bg.mfp-ready').click();
             $("#gp_single_product_button").prop("disabled", true);
             f_gp_disponibilidad_domicilio();
-            $("#domicilio").click();
             for (var i = 0; i < y.length; i++) {
+                console.log('GP cambiar dir 3', addrs_long);
                 y[i].innerText = decodeURIComponent(addrs_long) + '.';
             }
+        } else {
+            console.log('GP gp_direccion_guardada no disp');
+            $("#gp_single_product_button").prop("disabled", false);
         }
         const z = document.getElementsByClassName("gp_de_ubicacion");
         for (var i = 0; i < z.length; i++) {
@@ -900,9 +969,13 @@
         // status.textContent = '¡Ubicación actualizada!';
         $('.mfp-bg.mfp-ready').click();
         $('#autocomplete').val('');
+        console.log('GP gp_direccion_guardada fin');
     }
 
     function f_gp_disponibilidad_domicilio() {
+        console.log('GP f_gp_disponibilidad_domicilio init');
+        $("#gp_mensaje_domicilio").html('');
+        $("#li_dom_mensaje").remove();
         let upc = $("#sku").val(),
             lat = _gp_geo_lat,
             lng = _gp_geo_lng,
@@ -943,18 +1016,19 @@
 
         //callback - resultado de la peticion
         request.onload = function() {
-            $("#gp_mensaje_domicilio").html('<p></p>');
             const response = JSON.parse(this.response);
-            // const response = this.response;
-            console.log("respuesta del back", response);
-            console.log("type", typeof(response));
+            let elemento_li = '';
 
+            console.log('GP f_gp_disponibilidad_domicilio response', response);
             if (response.estatus) {
+                console.log('GP f_gp_disponibilidad_domicilio status');
                 response.tipos_envio.forEach((element, index, data) => {
                     if (element.id == 'domicilio') {
+                        console.log('GP f_gp_disponibilidad_domicilio domicilio');
                         if (element.estatus) {
                             element.subtipo.almacenes.forEach((element2, index2, data2) => {
                                 if (index2 == 0) {
+                                    console.log('GP f_gp_disponibilidad_domicilio', element2);
                                     let entrega_temp = element.subtipo.entrega_estimada;
                                     let val_entrega = entrega_temp.replace('Entrega ', "");
 
@@ -972,41 +1046,78 @@
                                     $("#lat").val(lat);
                                     $("#lng").val(lng);
 
-                                    const y = document.getElementsByClassName("gp_single_product_direccion");
-                                    const z = document.getElementsByClassName("gp_de_ubicacion");
-                                    for (var i = 0; i < y.length; i++) {
-                                        y[i].innerText = decodeURIComponent(direccion_larga);
-                                    }
-                                    for (var i = 0; i < z.length; i++) {
-                                        z[i].innerText = decodeURIComponent(direccion_larga);
-                                    }
-
                                     $("#gp_single_product_button").prop("disabled", false);
                                     $("#domicilio").prop("disabled", false);
                                     $('#domicilio').show();
+                                    console.log("GP show dom 2");
+                                    $('#bloque_domicilio').show();
                                     $('#gp_radio_recibir_domicilio').removeClass('disabled');
+                                    $("#li_dom_mensaje").remove();
+                                    if ($("#gp_ps_ul li").length < 1) {
+                                        $("#gp_ps_error_div").hide();
+                                    }
+                                    if ($("#gp_mensaje_tienda").length > 0) {
+                                        $("#gp_mensaje_domicilio").hide();
+                                    } else {
+                                        $("#gp_container_errors").hide();
+                                    }
+                                    $('#domicilio').click();
+                                    if ($("#gp_ps_ul li").length < 2) {
+                                        $("form.cart").show();
+                                        $("#gp_ps_contenedor_ventas").css('border', '0.1em solid #cfcfcf');
+                                    }
                                 }
                             });
                         } else {
-                            console.log("sin envio a domicilio!", element);
+                            console.log("GP f_gp_disponibilidad_domicilio sin envio a domicilio");
                             // $("#gp_mensaje_domicilio").html('<p>Por el momento no hay disponibilidad en esta zona, te sugerimos cambiar la dirección de envío. Code: WJS-002</p>');
                             if (element.estatus_mensaje_print) {
+                                console.log("GP f_gp_disponibilidad_domicilio imprimir mensaje");
                                 $("#gp_mensaje_domicilio").html(element.estatus_mensaje);
+                                if ($("#li_dom_mensaje").length) {
+                                    // no añadir error a lista
+                                } else {
+                                    let mensaje_error = element.estatus_mensaje;
+                                    let mensaje_error_cambio_dir = "";
+                                    if (mensaje_error.indexOf("101") >= 0) {
+                                        mensaje_error_cambio_dir = '<p>Te sugerimos <a href="#" id="gp_error_cambio_dir" class="gp_underline">cambiar la dirección de envío.</a></p>';
+                                    }
+                                    elemento_li = '<li id="li_dom_mensaje">' + mensaje_error + mensaje_error_cambio_dir + '</li>';
+                                    console.log('GP añadir mensaje error li', elemento_li);
+                                    $("#gp_ps_ul").append(elemento_li);
+                                }
+                                $("#gp_ps_error_div").show();
+                                if ($("#gp_ps_ul li").length >= 2) {
+                                    $("form.cart").hide();
+                                    $("#gp_ps_contenedor_ventas").css('border', 'none');
+                                }
                             }
                             $('#domicilio').prop('checked', false);
                             $('#domicilio').hide();
+                            if ($('#tienda').length > 0) {
+                                $('#tienda').click();
+                                $("#gp_single_product_button").prop("disabled", false);
+                            } else {
+                                $("#gp_single_product_button").prop("disabled", true);
+                            }
+                            $('#bloque_domicilio').hide();
                             $('#gp_radio_recibir_domicilio').addClass('disabled');
-                            $("#gp_single_product_button").prop("disabled", true);
                         }
                     }
                 });
             } else {
-                console.log("estatus 0");
                 $("#gp_mensaje_domicilio").html('<p>Por el momento no hay disponibilidad en esta zona, te sugerimos cambiar la dirección de envío. Code: WJS-001</p>');
                 $('#domicilio').prop('checked', false);
                 $('#domicilio').hide();
+                if ($('#tienda').length > 0) {
+                    $('#tienda').click();
+                    $("#gp_single_product_button").prop("disabled", false);
+                } else {
+                    $("#gp_single_product_button").prop("disabled", true);
+                }
+                $('#tienda').click();
+                $('#bloque_domicilio').hide();
                 $('#gp_radio_recibir_domicilio').addClass('disabled');
-                $("#gp_single_product_button").prop("disabled", true);
             }
         }
 
@@ -1046,6 +1157,7 @@
 
     $("#mi_ubicacion").ready(function() {
         $("#mi_ubicacion").on('click', function() {
+            console.log('GP click mi_ubicacion');
             gpFindeMe();
             return false;
         });
@@ -1057,6 +1169,7 @@
     $('#domicilio').ready(function() {
         $("#domicilio").prop("disabled", false);
         $('#domicilio').click(function() {
+            console.log('GP TEST ???');
             gpCookie('_gp_id_tipo_envio', 'domicilio', 1);
             $("#gp_single_product_button").removeClass();
             let condicion = $("#condicion").val();
@@ -1136,7 +1249,7 @@
                 }
                 $("#gp_single_product_button_txt").text('Apártalo en preventa ahora');
             } else {
-                $("#gp_single_product_button_txt").text('Apartar Ahora');
+                $("#gp_single_product_button_txt").text('Recoger en Sucursal');
             }
             gpCookie('_gp_id_tipo_envio', 'tienda', 1);
             $("#gp_single_product_button").removeClass();
@@ -1345,7 +1458,7 @@
             request.onload = function() {
                 const response = JSON.parse(this.response);
 
-                console.log("respuesta del back", response);
+                // console.log("respuesta del back", response);
 
                 //Si todo esta bien mostramos el resultado y se oculta el formulario
                 if (typeof response === 'object') {
@@ -1557,8 +1670,6 @@
                 var metaRadioName = $("input[name='garantia']:checked").attr('gp-gname');
                 if (metaRadio != 'gp_no_garantia') {
                     if ($('#domicilio').is(':checked')) {
-                        console.log('id radio', idRadio);
-                        console.log('meta radio', metaRadio);
                         $.extend(datos1, {
                             'id_garantia': idRadio,
                             'costo_garantia': metaRadio,
@@ -1615,7 +1726,6 @@
             $('#recoger_tienda').html('Cargando...');
 
             if (typeof(gp_disponibilidad_var) === 'undefined') {
-                console.log("no")
                 $('#tiendas_disponibles').html('Error. Code: GPJ-100');
                 return;
             }
@@ -1732,8 +1842,6 @@
                 var metaRadioName = $("input[name='garantia']:checked").attr('gp-gname');
                 if (metaRadio != 'gp_no_garantia') {
                     if ($('#domicilio').is(':checked')) {
-                        console.log('id radio', idRadio);
-                        console.log('meta radio', metaRadio);
                         $.extend(datos1, {
                             'id_garantia': idRadio,
                             'costo_garantia': metaRadio,
@@ -1821,8 +1929,7 @@
 
     $("#modal_de").ready(function() {
         $("#modal_de").on('click', '.gp_btn_ship', function() {
-            console.log("-- entre 3");
-            $("#gp_single_product_button").prop("disabled", true);
+            // $("#gp_single_product_button").prop("disabled", true);
             gp_direccion_guardada();
         });
     });
@@ -1951,9 +2058,6 @@
             var place = autocomplete.getPlace();
             var adrs = place.address_components;
 
-            console.log('autocompletado');
-            console.log(adrs);
-
             let address1 = "";
             let address_num = "";
             let postcode = "";
@@ -2075,8 +2179,6 @@
                         let calle = '';
                         let numero = '';
 
-                        console.log('mapa');
-                        console.log(adrss);
                         for (const componente of adrss) {
                             const tipoComponente = componente.types[0];
                             switch (tipoComponente) {

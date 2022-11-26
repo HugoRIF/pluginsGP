@@ -42,7 +42,7 @@ if ( ! defined( 'WPINC' ) ) {
  * 
  * Actualizala cuando liberes nuevas versiones.
  */
-define( 'GAMEPLANET_WIDGETS_VERSION', '0.0.148' );
+define( 'GAMEPLANET_WIDGETS_VERSION', '0.0.208' );
 
 /**
  * El código que se ejecuta durante la activación del plugin.

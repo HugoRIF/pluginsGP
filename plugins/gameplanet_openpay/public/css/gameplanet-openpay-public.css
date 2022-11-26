@@ -1,0 +1,38 @@
+
+
+.accepted_cards-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+.accepted_cards-wrapper span{
+    width: 100%;
+    font-size: 0.8em;
+}
+.accepted_cards-wrapper img{
+    height: 30px !important;
+    width: auto;
+    max-width: fit-content;
+
+}
+.gp_openpay_progress-wrapper{
+    z-index: 12 !important;
+    border: none !important;
+    background: transparent !important;
+}
+.gp_openpay_progress-wrapper div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.gp_openpay_progress-wrapper p{
+    font-size: 0.8em;
+}
+.openpay-card-expire{
+    display: flex;
+    margin-bottom: 0;
+}
+.openpay-card-expire span{
+    font-size: 1.5em;
+    margin: 0 0.5em;
+}

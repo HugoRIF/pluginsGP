@@ -179,7 +179,8 @@ class Gameplanet_Public {
 				'email' => $_POST['email'],
 				'password' => $_POST['password'],
 				'firstname' => $user->user_firstname,
-				'lastname' => $user->user_lastname
+				'lastname' => $user->user_lastname,
+				'id_tienda' => 250
 			)),
 			'headers' => array(
 				'Content-Type' => 'application/json',
@@ -256,14 +257,12 @@ class Gameplanet_Public {
 			)),
 			'headers' => array(
 				'Content-Type' => 'application/json',
-				// 'data-jwt-master' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InRpbWVfdG9fbGl2ZSI6IjM2MDAiLCJpc19tYXN0ZXIiOnRydWV9LCJpYXQiOjE2NDc2MzIyNTYsImV4cCI6MTk2Mjk5MjI1Nn0.k08KyaU5H4uOMDVVJHIv6RtarvjrjVVhdS_VpDs4EG8'
 				'data-jwt-master' => get_option('data-jwt-master')
 			)
 		);
 		$this->gp_logs('gp_authenticate_user', 'Email',  $username);
 
 		// validamos que el usuario tenga cuenta GP
-		// $url = "https://api.gameplanet.com/v1/customer/login";
 		$url = get_option('ruta_gameplanet') . "cliente/inicia_sesion";
 		$this->gp_logs('gp_authenticate_user', 'Endpoint (POST)', $url);
 
@@ -695,19 +694,18 @@ class Gameplanet_Public {
 			$email = sanitize_text_field($_POST['user_login']);
 			$user = get_user_by('email', $email);
 			@$userId = $user->ID;
-	
+
+			//? ----
 			$args = array(
-				'body' => json_encode(array(
-					'email' => $email
-				)),
 				'headers' => array(
 					'Content-Type' => 'application/json',
-					'data' => get_option('data-telefonero')
+					'data-jwt-master' => get_option('data-jwt-master')
 				)
 			);
-			$url = get_option('ruta_telefonero') . "cliente/email/info";
-			$this->gp_logs('gp_user_lost_password', 'Endpoint (POST)',  $url);
-			$response = wp_remote_post($url, $args);
+	
+			$url = get_option('ruta_gameplanet') . "cliente/info/" . $email;
+			$response = wp_remote_get($url, $args);
+			//? ----
 	
 			if (is_wp_error($response)) {
 				$this->gp_logs('gp_user_lost_password', 'Error', $response->get_error_message());
@@ -725,20 +723,20 @@ class Gameplanet_Public {
 				// Success
 			} else {
 				//al no existir en gamers ver si existe en magento
-				if (@$ext_auth['result']['id_cliente']) {
+				if ($ext_auth['success'] && $ext_auth['code'] == 200) {
 					$comb = "a0AbBc1CdDe2EfFg3Gh(Hi4IjJk5KlLm6MnNo7OpPq8QrRs#StTu%UvVw&W)xXy/YzZ@";
 					$shfl = str_shuffle($comb);
 					$pwd = substr($shfl,0,16);
 					// al existir en magento crea usuario en gamers
 					$userdata = array(
-						'user_email'   => $ext_auth['result']['email'],
-						'user_login'   => $ext_auth['result']['email'],
+						'user_email'   => $ext_auth['data']['cliente']['email'],
+						'user_login'   => $ext_auth['data']['cliente']['email'],
 						'user_pass'    => $pwd,
-						'first_name'   => $ext_auth['result']['nombre'],
-						'last_name'    => $ext_auth['result']['apellido'],
-						'display_name' => $ext_auth['result']['nombre'] . " " . $ext_auth['result']['apellido'],
-						'token'        =>  $ext_auth['result']['gp_token'],
-						'id_gp'        =>  $ext_auth['result']['id_cliente']
+						'first_name'   => $ext_auth['data']['cliente']['firstname'],
+						'last_name'    => $ext_auth['data']['cliente']['lastname'],
+						'display_name' => $ext_auth['data']['cliente']['firstname'] . " " . $ext_auth['data']['cliente']['lastname'],
+						'token'        =>  $ext_auth['data']['cliente']['gp_token'],
+						'id_gp'        =>  $ext_auth['data']['cliente']['id_cliente']
 					);
 	
 					$new_user_id = wp_insert_user($userdata);
@@ -749,6 +747,7 @@ class Gameplanet_Public {
 					$this->gp_mensaje('error', "No se encuentra registrado, favor de crear una cuenta.");
 					$this->gp_logs('gp_user_lost_password', "4. Usuario no existe");
 					$this->gp_logs('gp_user_lost_password', "5. Termino\n--------------------------------------------------------------");
+					exit;
 				}
 				return false;
 			}
@@ -785,12 +784,11 @@ class Gameplanet_Public {
 	 * @return   int|false	Número de bytes escritos o falso en un error.
 	 */
 	function gp_logs($funcion, $mensaje, $extra = null){
-		$directorio = './wp-content/gp/gp_logs/';
+		$directorio = './wp-content/gp/logs_gp/';
 
 		if (!file_exists($directorio)) {
-			mkdir($directorio, 777, true);
+			mkdir($directorio, 0755, true);
 		}
-	
 		$tiempo = current_time('mysql');
 		$fecha = strtotime($tiempo);
 		$fecha_log = date('M-d', $fecha);

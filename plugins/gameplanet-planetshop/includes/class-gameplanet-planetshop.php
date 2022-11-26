@@ -172,14 +172,9 @@ class Gameplanet_Planetshop {
 		$this->loader->add_action( 'wp_ajax_gp_ajax_sucursales', $plugin_admin, 'gp_ajax_sucursales');
 		$this->loader->add_action( 'wp_ajax_nopriv_gp_ajax_sucursales', $plugin_admin, 'gp_ajax_sucursales');
 
-		//* hooks para ajax
-		$this->loader->add_action( 'wp_ajax_gp_ajax_mi_cuenta_button', $plugin_admin, 'gp_ajax_mi_cuenta_button');
-		$this->loader->add_action( 'wp_ajax_nopriv_gp_ajax_mi_cuenta_button', $plugin_admin, 'gp_ajax_mi_cuenta_button_no_priv');
-
 		//* hooks ajax "widget" producto simple
 		$this->loader->add_action( 'wp_ajax_gp_ajax_disponibilidad', $plugin_admin, 'gp_ajax_disponibilidad');
 		$this->loader->add_action( 'wp_ajax_nopriv_gp_ajax_disponibilidad', $plugin_admin, 'gp_ajax_disponibilidad');
-
 	}
 
 	/**
@@ -282,7 +277,7 @@ class Gameplanet_Planetshop {
 		//* cambio el nombre de los elementos del menú de "my-account"
 		// $this->loader->add_action( 'woocommerce_account_menu_items', $plugin_public, 'gp_my_account_menu_text');
 		
-		//*
+		//* elimina línea "envío" en la tabla de carrito
 		$this->loader->add_filter( 'woocommerce_cart_ready_to_calc_shipping', $plugin_public, 'gp_disable_shipping_row_on_cart');
 	}
 

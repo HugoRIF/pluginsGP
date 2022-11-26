@@ -531,3 +531,15 @@ function ajax_otp_send_sigin(){
 
 
 /*** ADMIN */
+
+function resporte_IP(){
+  $Model = new GP_OTP_CONTROL_MODEL();
+  $records = $Model->getIPControl();
+  return [
+    "success"=>true,
+    "data"=>[
+      "records"=>$records,
+      "total"=>0
+    ]
+    ];
+}

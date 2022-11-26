@@ -293,72 +293,11 @@ class Gameplanet_Planetshop_Admin
 	 */
 	public function gp_ajax_mi_cuenta_button()
 	{
-		if (is_user_logged_in()) {
-			$content = $this->generate_mi_cuenta_button();
-			echo json_encode([
-				"success" => true,
-				"code" => 1,
-				"message" => "Usuario Logeado",
-				"content" => $content
-			]);
-			die();
-		} else {
-			$this->gp_ajax_mi_cuenta_button_no_priv();
-		}
-	}
-	private function generate_mi_cuenta_button()
-	{
-		ob_start();
-
-		$icon_style = get_theme_mod('account_icon_style');
-	?>
-		<li class="account-item has-icon has-dropdown">
-				<?php if ($icon_style && $icon_style !== 'image' && $icon_style !== 'plain') echo '<div class="header-button">'; ?>
-
-				<?php if (is_user_logged_in()) { ?>
-					<a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>" class="account-link account-login
-		<?php if ($icon_style && $icon_style !== 'image') echo get_flatsome_icon_class($icon_style, 'small'); ?>" title="<?php _e('My account', 'woocommerce'); ?>">
-
-						<?php if (get_theme_mod('header_account_title', 1)) { ?>
-							<span class="header-account-title">
-								<?php
-								if (get_theme_mod('header_account_username')) {
-									$current_user = wp_get_current_user();
-									echo apply_filters('flatsome_header_account_username', esc_html($current_user->display_name));
-								} else {
-									esc_html_e('My account', 'woocommerce');
-								}
-								?>
-							</span>
-						<?php } ?>
-
-						<?php if ($icon_style == 'image') {
-							echo '<i class="image-icon circle">' . get_avatar(get_current_user_id()) . '</i>';
-						} else  if ($icon_style) {
-							echo get_flatsome_icon('icon-user');
-						} ?>
-
-					</a>
-
-				<?php } ?>
-
-				<?php if ($icon_style && $icon_style !== 'image' && $icon_style !== 'plain') echo '</div>'; ?>
-
-				<ul class="nav-dropdown  <?php flatsome_dropdown_classes(); ?>">
-					<?php wc_get_template('myaccount/account-links.php'); ?>
-				</ul>
-
-	<?php
-		return ob_get_clean();
+	
 	}
 	public function gp_ajax_mi_cuenta_button_no_priv()
 	{
-		echo json_encode([
-			"success" => false,
-			"code" => 2,
-			"message" => "usuario no logeado"
-		]);
-		die();
+	
 	}
 
 	public function gp_ajax_disponibilidad(){
@@ -371,21 +310,26 @@ class Gameplanet_Planetshop_Admin
 				$lng_param = $params['lng'];
 				$addrs_long = $params['addrs_long'];
 				$tienda_fav_param = $params['tienda_fav'];
+				$nom_tienda_fav_param = urldecode($params['nom_tienda_fav']);
 
 				$producto = wc_get_product( $id_prod );
 
 				if(is_null($producto) || $producto == false){
-					echo json_encode(array(
-						"<p>Code: PSA-003</p><p>{$id_prod}</p>",
+					echo json_encode(array("
+						<div id='gp_ps_contenedor_ventas' class='gp-disponibilidad-container' style='margin-bottom: 2em;'>
+							<div id='gp_content' class='gp_hi' role='main'>
+								<div class='row row-main'>
+									<div class='large-12 col' style='padding-bottom: 0px;'>
+										<div class='pr-field-wrap'>
+											<div id='gp_widget'>
+												<p>En este momento no pudimos verificar el inventario para este producto. Por favor, inténtelo más tarde.<span style='color: white;'>Code: PSA-006. Ref-{$id_prod}</span></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>",
 						"",
-						""
-					));
-					die();
-				}
-
-				if(is_null($producto) || $producto == false){
-					echo json_encode(array(
-						"<p>Code: PSA-003</p>",
 						"",
 						""
 					));
@@ -394,16 +338,8 @@ class Gameplanet_Planetshop_Admin
 
 				if(!$producto->is_type( 'simple' )){
 					echo json_encode(array(
-						"<p>Error de producto</p>",
+						"<p>Error de producto.<span style='color: white;'>Code: PSA-007</span></p>",
 						"",
-						""
-					));
-					die();
-				}
-				
-				if(!$producto->is_in_stock()){
-					echo json_encode(array("
-						<p>Por el momento no tenemos disponible este producto</p>",
 						"",
 						""
 					));
@@ -430,10 +366,81 @@ class Gameplanet_Planetshop_Admin
 						$bandera_sucursal = true;
 					}
 				}
+				
+				$link_catalogo = site_url('/catalogo/?buscar_productos=1&stock=instock');
+				if(!$producto->is_in_stock()){
+					echo json_encode(array("
+						<div id='gp_ps_error_div' class='gp_ps_fail_box'>
+							<div id='fail_section_header' class='factura-fail_section_header'>
+								<div class='message-container'>
+									<h3 class='gp_color_red'>No disponible por el momento</h3>
+								</div>
+							</div>
+							<div id='fail_section_response'>
+								<ul id='gp_ps_ul'>
+									<li>
+										<p>No sabemos si este producto volverá a estar disponible, ni cuándo.</p>
+										<p>Te sugerimos buscar más productos en nuestro <a class='gp_underline' href='{$link_catalogo}'>catálogo</a>.<span style='color: white;'>Code: PSA-008</span></p>
+									</li>
+								</ul>
+							</div>
+						</div>",
+						"",
+						"",
+						""
+					));
+					die();
+				}
+
+				$precio_block = 0;
+                if($producto->is_on_sale()){
+                    $precio_block = $producto->get_sale_price();
+                } else{
+                    $precio_block = $producto->get_regular_price();
+                }
+                if($precio_block <= 0){
+					echo json_encode(array("
+						<div id='gp_ps_error_div' class='gp_ps_fail_box'>
+							<div id='fail_section_header' class='factura-fail_section_header'>
+								<div class='message-container'>
+									<h3 class='gp_color_red'>No disponible por el momento</h3>
+								</div>
+							</div>
+							<div id='fail_section_response'>
+								<ul id='gp_ps_ul'>
+									<li>
+										<p>No sabemos si este producto volverá a estar disponible, ni cuándo.1</p>
+										<p>Te sugerimos buscar más productos en nuestro <a class='gp_underline' href='{$link_catalogo}'>catálogo</a>.<span style='color: white;'>Code: PSA-003</span></p>
+									</li>
+								</ul>
+							</div>
+						</div>",
+						"",
+						"",
+						""
+					));
+					die();
+				}
 
 				if(!$bandera_ecom && !$bandera_sucursal){
-					echo json_encode(array("
-						<p>Por el momento no tenemos disponible este producto en línea</p>",
+					$mensaje_sin_prod = "
+						<div id='gp_ps_contenedor_ventas' class='gp-disponibilidad-container' style='margin-bottom: 2em;'>
+							<div id='gp_content' class='gp_hi' role='main'>
+								<div class='row row-main'>
+									<div class='large-12 col' style='padding-bottom: 0px;'>
+										<div class='pr-field-wrap'>
+											<div id='gp_widget'>
+												<p>Por el momento no tenemos disponible este producto en línea</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					";
+					echo json_encode(array(
+						$mensaje_sin_prod,
+						"",
 						"",
 						""
 					));
@@ -444,20 +451,27 @@ class Gameplanet_Planetshop_Admin
 				$lat = $lat_param;
 				$lng = $lng_param;
 				$tienda_fav = $tienda_fav_param;
-				$id_cliente = get_current_user_id();
+				if(is_user_logged_in()){
+					$user = get_userdata(get_current_user_id());
+					$id_gp = $user->id_gp;
+				} else{
+					$id_gp = '0';
+				}
 
-				$disponibilidad2 = json_decode($clase->gp_wc_disponibilidad( $cantidad, $metodo, $upc, $lat, $lng, $tienda_fav, $id_cliente), true);
-
+				$disponibilidad2 = json_decode($clase->gp_wc_disponibilidad( $cantidad, $metodo, $upc, $lat, $lng, $tienda_fav, $id_gp), true);
 				if($disponibilidad2['estatus']){
 					//*
 					$html = '';
 					$inp_type = 'hidden';
+					$bandera_mensaje = false;
 					
 					$direccion_larga = $addrs_long;
 					if(isset($_COOKIE['_gp_geo_address_long'])){
 						$direccion_larga = urldecode(filter_var($_COOKIE['_gp_geo_address_long'], FILTER_SANITIZE_ENCODED));
 					}
 					if(count($disponibilidad2['tipos_envio']) > 0){
+						$error_domicilio = '';
+						$error_tienda = '';
 						foreach($disponibilidad2['tipos_envio'] as $key => $envio){
 							$mensaje_monto_minimo = '';
 							switch($envio['id']){
@@ -502,7 +516,7 @@ class Gameplanet_Planetshop_Admin
 											}
 											$hidden_inputs .= "
 												<input type='{$inp_type}' name='domicilio_id_tienda' id='domicilio_id_tienda' value='{$id_tienda}'>
-												<input type='{$inp_type}' name='domicilio_nombre_tienda' id='domicilio_nombre_tienda' value='{$nombre_tienda}'>
+												
 												<input type='{$inp_type}' name='domicilio_id_tipo_envio' id='domicilio_id_tipo_envio' value='{$id_tipo_envio}'>
 												<input type='{$inp_type}' name='domicilio_id_subtipo_envio' id='domicilio_id_subtipo_envio' value='{$id_subtipo_envio}'>
 												<input type='{$inp_type}' name='domicilio_entrega_estimada' id='domicilio_entrega_estimada' value='{$entrega_estimada}'>
@@ -511,66 +525,79 @@ class Gameplanet_Planetshop_Admin
 											";
 			
 											$html .= "
-												
-												<div style='margin-bottom: 2em;'>
-													{$hidden_inputs}
-													<span id='gp_radio_recibir_domicilio'>
-														<input type='radio' id='domicilio' name='entrega' value='domicilio'>
-														<label for='domicilio' id='domicilio_seleccionado'>{$envio['nombre']}</label>
-													</span>
-													<p class='gp_margin0p3'>
-														<a id='gp_recibir_domicilio_w' href='#' class='gp_underline' target='_self'>Cambiar dirección</a>
-														{$mensaje_monto_minimo}
-													</p>
-													<p class='gp_c_b_green gp_margin0p3'><span id='gp_domicilio_tiempo_entrega'>{$entrega_estimada}</span></span>
-													<p class='gp_c_b_blue gp_margin0p3'><span id='gp_domicilio_shipping'>{$ship_mensaje}</span></span>
-													<p class='gp_single_product_direccion gp_margin0p3'>{$direccion_larga}</span>
-													<div id='gp_mensaje_domicilio'>
-                                                		<p></p>
-                                            		</div>
-
+												<div id='bloque_domicilio'>
+													<div style='margin-bottom: 2em;'>
+														{$hidden_inputs}
+														<span id='gp_radio_recibir_domicilio'>
+															<input type='radio' id='domicilio' name='entrega' value='domicilio'>
+															<label for='domicilio' id='domicilio_seleccionado'>{$envio['nombre']}</label>
+														</span>
+														<p class='gp_margin0p3'>
+															<a id='gp_recibir_domicilio_w' href='#' class='gp_underline' target='_self'>Cambiar dirección de envío</a>
+															{$mensaje_monto_minimo}
+														</p>
+														<p class='gp_c_b_green gp_margin0p3'><span id='gp_domicilio_tiempo_entrega'>{$entrega_estimada}</span></span>
+														<p class='gp_c_b_blue gp_margin0p3'><span id='gp_domicilio_shipping'>{$ship_mensaje}</span></span>
+														<p class='gp_single_product_direccion gp_margin0p3'>{$direccion_larga}</span>
+													</div>
 												</div>
 											";
 										} elseif($envio['estatus_mensaje_print']){
 											$mensaje = $envio['estatus_mensaje'];
 											$cambio_dir = '';
-											if(str_contains($mensaje, 'W-101')){
+											$mensaje_cambio_dir = '';
+											if(str_contains($mensaje, 'Code')){
+												$bandera_mensaje = true;
 												$cambio_dir = "
 													<p class='gp_margin0p3'>
-														<a id='gp_recibir_domicilio_w' class='gp_underline gp_margin0p3' href='#modal_disp_tiendas' target='_self'>Cambiar dirección</a>
+														<a id='gp_recibir_domicilio_w' class='gp_underline gp_margin0p3' href='#modal_disp_tiendas' target='_self'>Cambiar dirección de envío</a>
 													</p>
 													<p class='gp_c_b_green gp_margin0p3'><span id='gp_domicilio_tiempo_entrega'></span></p>
 													<p class='gp_c_b_blue gp_margin0p3'><span id='gp_domicilio_shipping'></span></p>
 													<p class='gp_single_product_direccion gp_margin0p3'>{$direccion_larga}</p>
 												";
-
+												if(str_contains($mensaje, '101')){
+													$mensaje_cambio_dir = '<p>Te sugerimos <a href="#" id="gp_error_cambio_dir" class="gp_underline">cambiar la dirección de envío.</a></p>';
+												}
+											}
+											$hide_dom = '';
+											if(!$bandera_mensaje){
+												$error_domicilio = "";
+											} else{
+												$hide_dom = " style='display: none;' ";
+												$error_domicilio = "
+													<li id='li_dom_mensaje'>
+														<p>{$mensaje}</p>
+														{$mensaje_cambio_dir}
+													</li>
+												";
 											}
 											$html .= "
-												<div style='margin-bottom: 2em;'>
-													<input type='{$inp_type}' name='gp_domicilio_apartalo' id='gp_domicilio_apartalo' value=''>
-													<input type='{$inp_type}' name='domicilio_id_tienda' id='domicilio_id_tienda' value=''>
-													<input type='{$inp_type}' name='domicilio_nombre_tienda' id='domicilio_nombre_tienda' value=''>
-													<input type='{$inp_type}' name='domicilio_id_tipo_envio' id='domicilio_id_tipo_envio' value=''>
-													<input type='{$inp_type}' name='domicilio_id_subtipo_envio' id='domicilio_id_subtipo_envio' value=''>
-													<input type='{$inp_type}' name='domicilio_entrega_estimada' id='domicilio_entrega_estimada' value=''>
-													<input type='{$inp_type}' name='domicilio_cantidad' id='domicilio_cantidad' value=''>
-													<input type='{$inp_type}' name='domicilio_shipping' id='domicilio_shipping' value=''>
-													<span class='disabled' id='gp_radio_recibir_domicilio'>
-														<input style='display: none;' type='radio' id='domicilio' name='entrega' value='domicilio'>
-														<label for='domicilio' id='domicilio_seleccionado'>{$envio['nombre']}</label>
-													</span>
-													{$cambio_dir}
-													<div id='gp_mensaje_domicilio'>
-                                                		{$mensaje}
-                                            		</div>
+												<div id='bloque_domicilio' {$hide_dom}>
+													<div style='margin-bottom: 2em;'>
+														<input type='{$inp_type}' name='gp_domicilio_apartalo' id='gp_domicilio_apartalo' value=''>
+														<input type='{$inp_type}' name='domicilio_id_tienda' id='domicilio_id_tienda' value=''>
+														
+														<input type='{$inp_type}' name='domicilio_id_tipo_envio' id='domicilio_id_tipo_envio' value=''>
+														<input type='{$inp_type}' name='domicilio_id_subtipo_envio' id='domicilio_id_subtipo_envio' value=''>
+														<input type='{$inp_type}' name='domicilio_entrega_estimada' id='domicilio_entrega_estimada' value=''>
+														<input type='{$inp_type}' name='domicilio_cantidad' id='domicilio_cantidad' value=''>
+														<input type='{$inp_type}' name='domicilio_shipping' id='domicilio_shipping' value=''>
+														<span class='disabled' id='gp_radio_recibir_domicilio'>
+															<input style='display: none;' type='radio' id='domicilio' name='entrega' value='domicilio'>
+															<label for='domicilio' id='domicilio_seleccionado'>{$envio['nombre']}</label>
+														</span>
+														{$cambio_dir}
+													</div>
 												</div>
 											";
 										}
 									} else{
-										$html .= "
-											<div style='margin-bottom: 2em;'>
-												<p>Este producto no está disponible para envío a domicilio. <span style='color: white;'>Code: PSA-001</span></p>
-											</div>
+										$bandera_mensaje = true;
+										$error_domicilio = "
+											<li id='li_dom_mensaje'>
+												Por el momento este producto no ofrece la opción de 'Entrega a domicilio'.<span style='color: white;'>Code: PSA-010</span>
+											</li>
 										";
 									}
 									$mensaje_monto_minimo = '';
@@ -621,6 +648,7 @@ class Gameplanet_Planetshop_Admin
 													<input type='{$inp_type}' name='gp_sucursal_apartalo' id='gp_sucursal_apartalo' value='{$monto_minimo}'>
 												";
 											}
+											
 											$hidden_inputs .= "
 												<input type='{$inp_type}' name='sucursal_id_tienda' id='sucursal_id_tienda' value='{$id_tienda}'>
 												<input type='{$inp_type}' name='sucursal_nombre_tienda' id='sucursal_nombre_tienda' value='{$nombre_tienda}'>
@@ -630,37 +658,53 @@ class Gameplanet_Planetshop_Admin
 												<input type='{$inp_type}' name='sucursal_cantidad' id='sucursal_cantidad' value='{$cantidad}'>
 												<input type='{$inp_type}' name='sucursal_shipping' id='sucursal_shipping' value='{$shipping}'>
 											";
+											$mens_tienda_dif = "
+												<div id='gp_mensaje'>
+													<p>
+											";
+											if($tienda_fav_param != $id_tienda){
+												$mens_tienda_dif .= "
+													La sucursal '{$nom_tienda_fav_param}' no tiene el producto disponible, te recomendamos 'Recoger en {$nombre_tienda}'.
+												";
+											}
+											$mens_tienda_dif .= "
+													</p>
+												</div>
+											";
 			
 											$html .= "
-												
-												<div style='margin-bottom: 2em;'>
-													{$hidden_inputs}
-													<span id='gp_radio_recibir_sucursal'>
-														<input type='radio' id='tienda' name='entrega' value='tienda'>
-														<label for='tienda' id='tienda_seleccionada'>{$envio['nombre']}</label>
-													</span>
-													<p class='gp_margin0p3'>
-														<a id='gp_cambiar_sucursal' class='gp_underline ' href='#modal_disp_tiendas' target='_self'>Cambiar sucursal</a>
-													</p>
-													{$mensaje_monto_minimo}
-													<p class='gp_c_b_green gp_margin0p3'><span id='gp_sucursal_tiempo_entrega'>{$entrega_estimada}</span></span>
-													<p class='gp_c_b_blue gp_margin0p3'><span id='gp_sucursal_shipping'>{$ship_mensaje}</span></span>
-
+												<div id='bloque_sucursal'>
+													<div style='margin-bottom: 2em;'>
+														{$hidden_inputs}
+														<span id='gp_radio_recibir_sucursal'>
+															<input type='radio' id='tienda' name='entrega' value='tienda'>
+															<label for='tienda' id='tienda_seleccionada'>{$envio['nombre']}</label>
+														</span>
+														<p class='gp_margin0p3'>
+															<a id='gp_cambiar_sucursal' class='gp_underline ' href='#modal_disp_tiendas' target='_self'>Recoger en otra sucursal</a>
+														</p>
+														{$mensaje_monto_minimo}
+														<p class='gp_c_b_green gp_margin0p3'><span id='gp_sucursal_tiempo_entrega'>{$entrega_estimada}</span></span>
+														<p class='gp_c_b_blue gp_margin0p3'><span id='gp_sucursal_shipping'>{$ship_mensaje}</span></span>
+														{$mens_tienda_dif}
+													</div>
 												</div>
 											";
 										} elseif($envio['estatus_mensaje_print']){
 											$mensaje = $envio['estatus_mensaje'];
-											$html .= "
-												<div style='margin-bottom: 2em;'>
-													<p>{$mensaje}</p>
-												</div>
+											$bandera_mensaje = true;
+											$error_tienda = "
+												<li id='li_tienda_mensaje'>
+													{$mensaje}
+												</li>
 											";
 										}
 									} else{
-										$html .= "
-											<div style='margin-bottom: 2em;'>
-												<p>Este producto no está disponible para apartado en sucursal. <span style='color: white;'>Code: PSA-002</span></p>
-											</div>
+										$bandera_mensaje = true;
+										$error_tienda = "
+											<li id='li_tienda_mensaje'>
+												Por el momento este producto no ofrece la opción de 'Recoger en sucursal apartándolo en línea', puedes ir directamente a la sucursal para comprarlo. Checa la disponibilidad en sucursal <a id='psa_click_suc' href='#'>aquí</a>.<span style='color: white;'>Code: PSA-011</span>
+											</li>
 										";
 									}
 									$mensaje_monto_minimo = '';
@@ -669,8 +713,23 @@ class Gameplanet_Planetshop_Admin
 							}
 						}
 					} else{
-						echo json_encode(array("
-							<p>Por el momento no tenemos disponible este producto en línea</p>",
+						$mensaje_sin_prod = "
+							<div id='gp_ps_contenedor_ventas' class='gp-disponibilidad-container' style='margin-bottom: 2em;'>
+								<div id='gp_content' class='gp_hi' role='main'>
+									<div class='row row-main'>
+										<div class='large-12 col' style='padding-bottom: 0px;'>
+											<div class='pr-field-wrap'>
+												<div id='gp_widget'>
+													<p>Por el momento no tenemos disponible este producto en línea</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						";
+						echo json_encode(array(
+							$mensaje_sin_prod,
 							"",
 							""
 						));
@@ -705,7 +764,11 @@ class Gameplanet_Planetshop_Admin
 					if($cats){
 						$arreglo = [];
 						foreach ($cats  as $term  ) {
-							$product_cat_name = $term->name;
+							if(isset($term->name)){
+								$product_cat_name = $term->name;
+							} else{
+								$product_cat_name = '';
+							}
 							array_push($arreglo, $product_cat_name);
 							// break;
 						}
@@ -717,7 +780,11 @@ class Gameplanet_Planetshop_Admin
 					if($cond){
 						$arreglo = [];
 						foreach ($cond  as $term  ) {
-							$product_tag_name = $term->name;
+							if(isset($term->name)){
+								$product_tag_name = $term->name;
+							} else{
+								$product_tag_name = '';
+							}
 							array_push($arreglo, $product_tag_name);
 							// break;
 						}
@@ -729,7 +796,11 @@ class Gameplanet_Planetshop_Admin
 					if($tags){
 						$arreglo = [];
 						foreach ($tags  as $term  ) {
-							$product_tag_name = $term->name;
+							if(isset($term->name)){
+								$product_tag_name = $term->name;
+							} else{
+								$product_tag_name = '';
+							}
 							array_push($arreglo, $product_tag_name);
 							// break;
 						}
@@ -744,8 +815,37 @@ class Gameplanet_Planetshop_Admin
 							</div>
 						";
 					}
+
+					$display_mensajes = "";
+					$display_form_cart = "";
+					$display_border_ventas = "";
+					if(!$bandera_mensaje){
+						$display_mensajes = " style='display: none;' ";
+					} else{
+						if(!empty($error_domicilio) && !empty($error_tienda)){
+							$display_form_cart = " style='display: none;' ";
+							$display_border_ventas = " style='border: none;' ";
+						}
+					}
+
+					$div_errores = "
+						<div id='gp_ps_error_div' class='gp_ps_fail_box' {$display_mensajes}>
+							<div id='fail_section_header' class='factura-fail_section_header'>
+								<div class='message-container'>
+									<h3 class='gp_color_red'>No disponible por el momento</h3>
+								</div>
+							</div>
+							<div id='fail_section_response'>
+								<ul id='gp_ps_ul'>
+									{$error_domicilio}
+									{$error_tienda}
+								</ul>
+							</div>
+						</div>
+					";
 					$elemento_widget = "
-						<div class='gp-disponibilidad-container'>
+						{$div_errores}
+						<div id='gp_ps_contenedor_ventas' class='gp-disponibilidad-container' {$display_border_ventas}>
 							<div id='gp_content' class='gp_hi' role='main'>
 								<div class='row row-main'>
 									<div class='large-12 col' style='padding-bottom: 0px;'>
@@ -763,7 +863,7 @@ class Gameplanet_Planetshop_Admin
 												<input type='hidden' name='plataforma' id='plataforma' value='{$plataforma}'>
 												<input type='hidden' name='lat' id='lat' value='{$lat}'>
 												<input type='hidden' name='lng' id='lng' value='{$lng}'>
-												<form class='cart' action='{$action}' method='post' enctype='multipart/form-data'>
+												<form class='cart' action='{$action}' method='post' enctype='multipart/form-data' {$display_form_cart}>
 													{$cantidad}
 													<button id='gp_single_product_button'
 													type='submit' class='gp_single_product_button_disable'
@@ -803,7 +903,7 @@ class Gameplanet_Planetshop_Admin
 							$msi_renglon = '';
 							foreach($plazos as $key => $mes){
 								$costo_fin = $precio / $mes;
-								$costo_fin_html = get_woocommerce_currency_symbol() . number_format($costo_fin, 3, '.', ',');
+								$costo_fin_html = get_woocommerce_currency_symbol() . number_format($costo_fin, 2, '.', ',');
 								$msi_renglon .= "
 									<tr>
 										<td>{$mes} meses</td>
@@ -959,7 +1059,9 @@ class Gameplanet_Planetshop_Admin
 					echo json_encode($elementos);
 				} else{
 					echo json_encode(array(
-						"<div class='gp-disponibilidad-container'><p>Por el momento no tenemos disponible este producto. Code: PSA-004</p></div>",
+						"<div id='gp_ps_contenedor_ventas' class='gp-disponibilidad-container'>
+						<p>No sabemos si este producto volverá a estar disponible, ni cuándo.2</p>
+						<p>Te sugerimos buscar más productos en nuestro <a class='gp_underline' href='{$link_catalogo}'>catálogo</a>.<span style='color: white;'>Code: PSA-012</span></p></div>",
 						"",
 						"",
 						""

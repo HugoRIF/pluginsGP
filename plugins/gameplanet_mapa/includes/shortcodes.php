@@ -24,8 +24,8 @@ function buscador_sucursales(){
   //los scripts de google maps solo es para un ambiente local
    ?>
     <script src = "https://polyfill.io/v3/polyfill.min.js?features=default" defer></script>
-    <!-- <script src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBQe0wH40d8oR-f5cBru1-bvlHB_Gj_sdU&libraries=places" defer></script> -->
-    
+    <!-- <script src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBQe0wH40d8oR-f5cBru1-bvlHB_Gj_sdU&libraries=places" defer></script>
+     -->
     <div id="mapa_plugin_container">
       <div class="page-title normal-title">
         <div id="header-container" class="page-title-inner text-left ">

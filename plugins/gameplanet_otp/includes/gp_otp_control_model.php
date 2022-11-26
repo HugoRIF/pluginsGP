@@ -529,5 +529,17 @@ class GP_OTP_CONTROL_MODEL{
 
     }
   }
+
+  public function getIPControl(){
+    global $wpdb;
+    $total_logs_query ="
+    SELECT * 
+    FROM {$this->table_ip} 
+    ORDER BY resend_attends DESC
+    ;
+  ";
+  return $wpdb->get_results($total_logs_query); 
+
+  }
 }
 

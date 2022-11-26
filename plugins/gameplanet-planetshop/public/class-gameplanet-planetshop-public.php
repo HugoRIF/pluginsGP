@@ -75,7 +75,7 @@ class Gameplanet_Planetshop_Public {
 
 		wp_enqueue_script( $this->gameplanet_planetshop . '_gg_captcha_api', 'https://www.google.com/recaptcha/api.js', array( 'jquery' ), $this->version, false );
 
-		wp_enqueue_script( $this->gameplanet_planetshop . '_gg_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDII7Z9fXhavcRxvTWFdf8YZzr2mq_NFf8&libraries=places', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->gameplanet_planetshop . '_gg_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQe0wH40d8oR-f5cBru1-bvlHB_Gj_sdU&libraries=places', array( 'jquery' ), $this->version, false );
 
 		$nonce = wp_create_nonce( '7#Ez&G2tZ{>z]KUn' );
 		wp_localize_script( $this->gameplanet_planetshop, 'ajax_var', array(
@@ -108,15 +108,6 @@ class Gameplanet_Planetshop_Public {
 				'url' => admin_url('admin-ajax.php'),
 				'nonce' => wp_create_nonce('gpsucursales_ajax'),
 				'action' => 'gp_ajax_sucursales',
-				'action_mi_cuenta' => 'gp_ajax_mi_cuenta_button',
-			)
-		);
-		wp_localize_script(
-			$this->gameplanet_planetshop,
-			'var_ajax_mi_cuenta',
-			array(
-				'url' => admin_url('admin-ajax.php'),
-				'action' => 'gp_ajax_mi_cuenta_button',
 			)
 		);
 
@@ -824,7 +815,6 @@ class Gameplanet_Planetshop_Public {
 	 * @since    1.0.0
 	 */
 	public function gp_ps_write_shipping_info(){
-		$this->gp_ps_log('gp_ps_write_shipping_info', "log formulario envio");
 		if(is_user_logged_in()){
 
 			$carrito = WC()->cart->get_cart();
@@ -1000,6 +990,7 @@ class Gameplanet_Planetshop_Public {
 			$solicitud = $datos['quantity'];
 
 			$disponible = $this->gp_disponibilidad2($datos['product_id'], $datos['tipo'], $sku, $lat, $lng, $tienda_fav, $solicitud);
+			$this->gp_ps_log('gp_ps_validar_carrito_checkout', "disponibilidad", $disponible);
 			$carrito[$llave]['nota'] = $disponible['result']['nota'];
 			$carrito[$llave]['tienda'] = $disponible['result']['id_tienda'];
 			$carrito[$llave]['subtipo'] = $disponible['result']['id_subtipo_envio'];
@@ -1049,6 +1040,7 @@ class Gameplanet_Planetshop_Public {
 			}
 		}
 
+		$this->gp_ps_log('gp_ps_validar_carrito_checkout', "carrito", $carrito);
 		$this->gp_ps_log('gp_ps_validar_carrito_checkout', "actualizo carrito disponibilidad");
 		WC()->cart->set_cart_contents($carrito);
 		WC()->cart->set_session();
@@ -1197,7 +1189,6 @@ class Gameplanet_Planetshop_Public {
 					'lng' => $lng,
 					'id_tienda_favorita' => $tienda_fav,
 					'id_tienda_seleccionada' => $tienda_fav,
-					
 					'domicilio' => $datos_domicilio,
 					'tienda' => $datos_tienda,
 				],
@@ -1521,11 +1512,15 @@ class Gameplanet_Planetshop_Public {
 		if(isset($values['id_garantia']) && !empty($values['id_garantia'])){
 			$garantia_id = $values['id_garantia'] ;
 		}
-		if(isset($values['costo_garantia']) && !empty($values['costo_garantia'])){
-			$garantia_costo = $values['costo_garantia'];
-		}
-		if(isset($values['nombre_garantia']) && !empty($values['nombre_garantia'])){
-			$garantia_nombre = $values['nombre_garantia'] ;
+		if($garantia_id == 'gp_no_garantia'){
+			$garantia_id = '';
+		} else{
+			if(isset($values['costo_garantia']) && !empty($values['costo_garantia'])){
+				$garantia_costo = $values['costo_garantia'];
+			}
+			if(isset($values['nombre_garantia']) && !empty($values['nombre_garantia'])){
+				$garantia_nombre = $values['nombre_garantia'] ;
+			}
 		}
 		
 		if(!empty($garantia_id)){
@@ -2237,22 +2232,25 @@ class Gameplanet_Planetshop_Public {
 			wc_add_notice( 'Inventario insuficiente.', 'error' );
 		}
 
+		$tipo_seleccionado = false;
+		$product = wc_get_product( $product_id );
+
+		// bloqueo venta digital
+		$link_catalogo = site_url('/catalogo/?buscar_productos=1&stock=instock');
+        if ($product->is_virtual()) {
+            wc_add_notice( "Por el momento no podemos ofrecerte este producto en línea. Te sugerimos buscar más productos en nuestro <a class='gp_underline' style='margin: 0;' href='{$link_catalogo}'>catálogo</a>.<span style='color: #e9cfcf;'>Code: PS-020</span>", 'error' );
+            $passed = false;
+			return $passed;
+        }
+
 		if(!isset($_COOKIE["_gp_data"])){
 			$passed = false;
 			wc_add_notice( 'Habilite las cookies en su navegador antes de continuar. Code: PS-016', 'error' );
 			return $passed;
 		} else{
-			$this->gp_ps_log('gp_ps_add_to_cart_validation', 'inicio');
 			//! validar que cookie por lo menos tenga tipo de envio
-
-			// $this->gp_ps_log('gp_ps_add_to_cart_validation', 'tipo cookie', gettype($_COOKIE['_gp_data_test']));
-			// $this->gp_ps_log('gp_ps_add_to_cart_validation', 'tipo cookie', urldecode($_COOKIE['_gp_data_test']));
-			// $this->gp_ps_log('gp_ps_add_to_cart_validation', 'tipo cookie', gettype($_COOKIE['_gp_data']));
-			// $this->gp_ps_log('gp_ps_add_to_cart_validation', 'tipo cookie', urldecode($_COOKIE['_gp_data']));
-			// $tempo = json_decode(stripslashes($_COOKIE['_gp_data_test']), true);
 			$tempo = json_decode(stripslashes($_COOKIE['_gp_data']), true);
-			// $this->gp_ps_log('gp_ps_add_to_cart_validation', 'tipo cookie', gettype($tempo));
-			$this->gp_ps_log('gp_ps_add_to_cart_validation', 'valor cookie', $tempo);
+
 			foreach($tempo as $key => $val){
 				if($key == 'id_garantia' && $val != 'gp_no_garantia'){
 					if($quantity > 1){
@@ -2268,18 +2266,32 @@ class Gameplanet_Planetshop_Public {
 						wc_add_notice( 'Por el momento solo se puede apartar 1 producto a la vez. Code: PS-018', 'error' );
 						return $passed;
 					}
-					$this->gp_ps_log('gp_ps_add_to_cart_validation', "Tipo de entrega", $val);
 					$tipo_seleccionado = true;
+				}
+			}
+			$plat = $product->get_attribute('pa_plataforma');
+			$plat_digital = array('BH', 'GP');
+        	if(in_array($plat, $plat_digital)){
+				if($quantity > 1){
+					wc_add_notice( 'Por el momento solo se puede añadir uno de estos productos al carrito.', 'error' );
+					$passed = false;
+					return $passed;
+				} elseif(!WC()->cart->is_empty()){
+					foreach(WC()->cart->get_cart() as $key => $values ) {
+						$prod_cart_id = $values['product_id'];
+						if($prod_cart_id == $product_id ){
+							WC()->cart->remove_cart_item($key);
+						}
+					}
 				}
 			}
 		}
 
 		if(!$tipo_seleccionado){
 			$passed = false;
-			wc_add_notice( 'Algo salió mal al obtener la información del producto. Code: PS-017', 'error' );
+			wc_add_notice( 'Algo salió mal al obtener la información del producto. <span style="color: #e9cfcf;">Code: PS-017</span>', 'error' );
 		}
 
-		$this->gp_ps_log('gp_ps_add_to_cart_validation', "Fin\n-----");
 		return $passed;
 	}
 
@@ -2296,8 +2308,6 @@ class Gameplanet_Planetshop_Public {
 		add_shortcode("sc_test", "test_sc");
 		//! test disponibilidad
 		add_shortcode("short_disp", "test_disponibilidad");
-		//boton de login
-		add_shortcode('short_mi_cuenta','gp_mi_cuenta_button');
 	}
 
 	/**
@@ -2912,10 +2922,12 @@ class Gameplanet_Planetshop_Public {
 			if($cantidad == 0 || is_null(WC()->cart->get_cart())){
 				return false;
 			}
+			// if(!current_user_can( 'administrator' )){
+			// 	if ( isset( $available_gateways['stripe'] )){
+			// 		unset( $available_gateways['stripe'] );
+			// 	}
+			// }
 			$carrito = WC()->cart->get_cart();
-			if ( isset( $available_gateways['conektaspei'] )){
-				unset( $available_gateways['conektaspei'] );
-			}
 			foreach($carrito as $item => $value){
 				if(isset($value['subtipo'])){
 					if($value['subtipo'] == 'preventa'){
@@ -2962,6 +2974,9 @@ class Gameplanet_Planetshop_Public {
 							}
 							if ( isset( $available_gateways['wc_rappipay'] )){
 								unset( $available_gateways['wc_rappipay'] );
+							}
+							if ( isset( $available_gateways['stripe'] )){
+								unset( $available_gateways['stripe'] );
 							}
 						}
 					}
@@ -3027,6 +3042,7 @@ class Gameplanet_Planetshop_Public {
         );
 
 		unset($fields['shipping_address_2']);
+		unset($fields['shipping_company']);
 
 		return $fields;
 	}
@@ -3194,8 +3210,9 @@ class Gameplanet_Planetshop_Public {
 		unset( $fields['billing_state'] );
 		unset( $fields['billing_address_1'] );
 		unset( $fields['billing_address_2'] );
-		unset( $fields['billing_phone'] );
+			unset( $fields['billing_phone'] );
 		//	unset( $fields['billing_email'] );
+
 		return $fields;
 	}
 
@@ -3523,6 +3540,14 @@ class Gameplanet_Planetshop_Public {
 					$new_price = $cart_item['monto_minimo'];
 					$cart_item['data']->set_price( $new_price );
 				}
+			} elseif(isset($cart_item['tipo']) && $cart_item['tipo'] == 'tienda'){
+				$product_id = $cart_item['product_id'];
+				$precios_tienda = get_post_meta( $product_id, 'gp_precio_tiendas' );
+				foreach($precios_tienda as $precio){
+					if(!is_null($precio) && is_numeric($precio)){
+						$cart_item['data']->set_price( $precio );
+					}
+				}
 			}
 		}
 	}
@@ -3530,6 +3555,7 @@ class Gameplanet_Planetshop_Public {
 	public function gp_remove_single_product_summary(){
 		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
 		//  add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 50);
+		
 		// regresar??
 		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
 		add_action( 'woocommerce_single_product_summary', function(){
@@ -3567,8 +3593,8 @@ class Gameplanet_Planetshop_Public {
 						$ext_auth = json_decode($response, true);
 						if($ext_auth['estatus']){
 							$col1 = 1;
-							$col2 = 7;
-							$col3 = 2;
+							$col2 = 8;
+							$col3 = 3;
 							
 							$cont1 = 1;
 							$cont2 = 11;
@@ -3594,7 +3620,9 @@ class Gameplanet_Planetshop_Public {
 									<div class=\"row row-collapse row-full-width gp_garantia_row\">
 										<div class=\"{$html_col1}\">
 											<div class=\"col-inner\">
-												<img style=\"width: 50px\" src=\"https://planet-53f8.kxcdn.com/wp-content/uploads/2022/09/21123629/protectionicon.png\">
+												<center>
+													<img style=\"width: 30px\" src=\"https://cdn.gameplanet.com/wp-content/uploads/2022/11/02155226/protectionicon.png\">
+												</center>
 											</div>
 										</div>
 										
@@ -4429,20 +4457,8 @@ class Gameplanet_Planetshop_Public {
 	 * @since    1.0.0
 	 */
 	public function gp_my_account_menu_text($items) {
-		// $items['edit-address'] = "Datos de envíos";
-		// $items['orders'] = "Compras";
-		// $items['my-presales'] = 'Preventas';
-		// $items['my-shopping'] = 'Historial de Compras';
-		// return $items;
-		return array(
-			'orders' => 'Compras',
-			'my-presales' => __( 'Preventas', 'woocommerce' ),
-			'my-shopping' => __( 'Historial de Compras', 'woocommerce' ),
-			'ywar-reviews' => __( 'Reseñas', 'woocommerce' ),
-			'edit-address' => __( 'Datos de envio', 'woocommerce' ),
-			'edit-account' => __( 'Detalles de la cuenta', 'woocommerce' ),
-		);
-		
+		$items['edit-address'] = "Datos de envío";
+		return $items;
 	}
 
 	/**
@@ -4496,7 +4512,7 @@ define('MENSAJE_APARTADO_E', '');
 define('MENSAJE_DOMICILIO_A', '
 	<div>
 		<h4>Hemos generado tu orden.</h4>
-		<p>Al porcesar tu orden se verificará la disponibilidad de tus productos (esto tomará unos minutos).</p>
+		<p>Al procesar tu orden se verificará la disponibilidad de tus productos (esto tomará unos minutos).</p>
 		<span>Toma en cuenta los siguientes puntos:</span>
 		<ul class="gp_list">
 			<p>Si un producto no está disponible se cancelará el envío de ese producto.</p>
