@@ -274,6 +274,17 @@ function ajax_otp_send_billing()
     $id_usuario = get_current_user_id();
     $ip_usuario = gp_otp_get_the_user_ip();
     $phone = '+52'.$params['phone'];
+
+    //validacion usuario de riesgo
+    if(get_user_meta( $id_usuario, "gp_niv_riesgo", true ) == 3){
+      echo(json_encode([
+        "success"=>false,
+        "message"=>"Servicio no disponible por el momento. CODE-RN-300",
+        "code"=>302,//
+        "data"=>"",
+      ]));
+      die();
+    }
     //validacion de telefono
 
     $telefono_disponible = verify_unique_phone($phone);

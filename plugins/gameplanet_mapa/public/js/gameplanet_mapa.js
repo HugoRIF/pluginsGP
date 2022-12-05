@@ -9,6 +9,11 @@
     let infoWindow;
     let currentLocation = {lat:19.4326077, lng:-99.13320799999997};
     var isMobile = window.matchMedia("only screen and (max-width: 800px)");
+    const pin_globo = {
+      gameplanet:'https://planet-53f8.kxcdn.com/wp-content/uploads/2022/11/28124136/globo-gameplanet.png',
+      gamers:'https://planet-53f8.kxcdn.com/wp-content/uploads/2022/11/28124134/globo-gamers.png',
+      planetshop:'https://planet-53f8.kxcdn.com/wp-content/uploads/2022/11/28124154/globo-planetshop.png',
+    };
 
     const defaultLat = {lat:19.4326077, lng:-99.13320799999997};
     $(function(){
@@ -255,10 +260,8 @@
       let html = ``;
       if(data.length){
         data.forEach((item,index) =>{
-          let image = "https://bibliotecario.s3.amazonaws.com/comercial/imagenes_tiendas/globo-gameplanet.png";
-          if(item.tienda.includes('Gamers')){
-            image = "https://bibliotecario.s3.amazonaws.com/comercial/imagenes_tiendas/globo-gamers.png";
-          }
+          let image = pin_globo[(item.tienda.includes('Gameplanet') || item.tienda.includes('Tienda Almacen'))?'gameplanet':(item.tienda.includes('Gamers')?'gamers':'planetshop')];
+          
           html = html+`
             <li>
               <div class="list_item-container" id="shop_item_${index}">
@@ -312,10 +315,9 @@
     }
     function setMarkers(data){
       data.forEach((item,index) =>{
-        let image = "https://bibliotecario.s3.amazonaws.com/comercial/imagenes_tiendas/globo-gameplanet.png";
-        if(item.tienda.includes('Gamers')){
-          image = "https://bibliotecario.s3.amazonaws.com/comercial/imagenes_tiendas/globo-gamers.png";
-        }
+        
+        let image = pin_globo[item.tienda.includes('Gameplanet')?'gameplanet':(item.tienda.includes('Gamers')?'gamers':'planetshop')];
+
         const shopMarker = new google.maps.Marker({
           position: new google.maps.LatLng(item.lat, item.lng),
           draggable: false,

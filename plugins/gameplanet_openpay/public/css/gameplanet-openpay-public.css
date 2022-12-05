@@ -3,9 +3,10 @@
 .accepted_cards-wrapper{
     display: flex;
     flex-direction: column;
+    margin-bottom: 0.5em;
 }
 .accepted_cards-wrapper span{
-    width: 100%;
+    width: fit-content;
     font-size: 0.8em;
 }
 .accepted_cards-wrapper img{
@@ -35,4 +36,51 @@
 .openpay-card-expire span{
     font-size: 1.5em;
     margin: 0 0.5em;
+}
+.msi_label{
+    align-items: center !important;
+    background: #00a650 !important;
+    border-bottom-right-radius: 8px !important;
+    display: flex;
+    justify-content: center !important;
+    margin-left: 10px !important;
+    padding: 6px 8px 4px !important;
+    width: fit-content;
+}
+.msi_label span{
+    align-items: center !important;
+    color: #fff !important;
+    display: flex;
+    font-family: Helvetica !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    line-height: 11px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+}
+#respose_token-container{
+    background-color: #b20000;
+    color: white;
+    padding: 0.5em 1em;
+    font-weight: 600;
+    margin: 1em;
+}
+.gp_openpay-card-input-cvc{
+    background-image: url('http://localhost/wordpress/wp-content/uploads/2022/12/card_cvc.svg') !important;
+    background-repeat: no-repeat;
+    background-position: right 0.618em center;
+    background-size: 32px 20px;
+}
+.gp_openpay_icon_credit_cards{
+    width: 155px;
+    margin-bottom: 0.3em;
+}
+.gp_openpay_gateway_icon{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 15px;
+    margin-top: -32px;
+    z-index: 1;
 }

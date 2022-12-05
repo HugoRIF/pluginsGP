@@ -80,6 +80,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-openpay.php';
  * @since    1.0.0
  */
 function run_gameplanet_openpay() {
+
 	$plugin = new Gameplanet_Openpay();
 	$plugin->run();
 }
@@ -128,5 +129,7 @@ const AJAX_ACTION_OPENPAY_GETCARD = 'gp_openpay_ajax_getCardType';
 
 add_action( 'wp_ajax_'.AJAX_ACTION_OPENPAY_GETCARD, AJAX_ACTION_OPENPAY_GETCARD);
 add_action( 'wp_ajax_nopriv_'.AJAX_ACTION_OPENPAY_GETCARD, AJAX_ACTION_OPENPAY_GETCARD);
+add_action('woocommerce_api_gp_openpay_confirm', 'gp_openpay_woocommerce_confirm', 10, 0);
+add_action('template_redirect', 'gp_openpay_wc_custom_redirect_after_purchase', 0);
 
 run_gameplanet_openpay();

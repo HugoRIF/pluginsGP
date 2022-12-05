@@ -169,7 +169,6 @@ class Gameplanet_Openpay {
 	private function define_public_hooks() {
 
 		$plugin_public = new Gameplanet_Openpay_Public( $this->get_gameplanet_openpay(), $this->get_version() );
-
 		//* carga css para área pública
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		//* carga js para área pública

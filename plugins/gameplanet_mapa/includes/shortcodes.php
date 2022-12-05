@@ -11,7 +11,7 @@ function f_gameplanet_mapa_shortcodes_init(){
 
 //! shortcode para pagina planes, seccion recargas [planes_gamers]
 function buscador_sucursales(){
-  $version = "1.02";
+  $version = "1.04";
   wp_enqueue_style( 'maps-styles', plugins_url( '../public/css/gameplanet_mapa.css' , __FILE__ ),array(),$version );
   wp_enqueue_style( 'maps-loader-styles', plugins_url( '../public/css/loader.css' , __FILE__ ) ,array(),$version);
   wp_enqueue_style( 'maps-infoWindow-styles', plugins_url( '../public/css/info_window.css' , __FILE__ ) ,array(),$version);
