@@ -93,6 +93,29 @@
 	        animation: slide-top 0.5s ease-in reverse ;
 }
 
+.gp_tooltip{
+  cursor: pointer;
+}
+.gp_tooltip .tooltiptext {
+  visibility: hidden;
+  width: 150px;
+  background-color: black;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 0.5em 0.8em;
+  position: absolute;
+  z-index: 1;
+  font-size: 0.85em;
+  /*Posicion*/
+  left: 50%;
+  margin-left: -60px;
+  margin-top: -90px;
+}
+
+.gp_tooltip:hover .tooltiptext {
+  visibility: visible;
+}
 /**
  * ----------------------------------------
  * animation slide-top
@@ -117,4 +140,19 @@
     -webkit-transform: translateY(-50px);
             transform: translateY(-50px);
   }
+}
+.label_openpay_month_interest_free{
+  display: inline-flex;
+}
+
+#openpay_month_interest_free_warning{
+  color:#ff6900
+
+}
+
+.general_shadow_box{
+  width:100%;
+  position: absolute;
+  height: 100px;
+  background-color: #ffffffa6;
 }

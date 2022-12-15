@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Plugin propio para utilizar openpay como meido de pago
+ * Plugin propio para proveer pagos a plazos fijos con openpay como meido de pago
  *
  * @link              http://example.com
  * @since             1.0.1
- * @package           Gameplanet_Openpay
+ * @package           Gameplanet_Pagos_Fijos
  *
  * @wordpress-plugin
- * Plugin Name:       Gameplanet Openpay
+ * Plugin Name:       Gameplanet Pagos Fijos
  * Description:       Plugin que activa el método de pago con tarjeta de Openpay.
  * Version:           1.0.1
  * Author:            Hugo Icelo
  * Author URI:        http://www.gameplanet.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       gameplanet-openpay
+ * Text Domain:       gameplanet-pagos_fijos
  * Domain Path:       /languages
  */
 
@@ -40,35 +40,35 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 $version = time();//eliminar en prod
-define( 'GAMEPLANET_OPENPAY_VERSION', $version );
+define( 'GAMEPLANET_PAGOS_FIJOS_VERSION', $version );
 include(plugin_dir_path( __FILE__ ) . 'public/functions.php');
 
 /**
  * El código que se ejecuta durante la activación del plugin.
- * Esta acción está documentada en includes/class-gameplanet-openpay-activator.php.
+ * Esta acción está documentada en includes/class-gameplanet-pagos_fijos-activator.php.
  */
-function activate_gameplanet_openpay() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-openpay-activator.php';
-	Gameplanet_Openpay_Activator::activate();
+function activate_gameplanet_pagos_fijos() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-pagos_fijos-activator.php';
+	Gameplanet_Pagos_Fijos_Activator::activate();
 }
 
 /**
  * El código que se ejecuta durante la desactivación del plugin.
- * Esta acción está documentada en includes/class-gameplanet-openpay-deactivator.php
+ * Esta acción está documentada en includes/class-gameplanet-pagos_fijos-deactivator.php
  */
-function deactivate_gameplanet_openpay() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-openpay-deactivator.php';
-	Gameplanet_Openpay_Deactivator::deactivate();
+function deactivate_gameplanet_pagos_fijos() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-pagos_fijos-deactivator.php';
+	Gameplanet_Pagos_Fijos_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_gameplanet_openpay' );
-register_deactivation_hook( __FILE__, 'deactivate_gameplanet_openpay' );
+register_activation_hook( __FILE__, 'activate_gameplanet_pagos_fijos' );
+register_deactivation_hook( __FILE__, 'deactivate_gameplanet_pagos_fijos' );
 
 /**
  * El núcleo de la clase del plugin que es usado para definir internacionalización,
  * hooks específicos para admin y para público.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-openpay.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-pagos_fijos.php';
 
 /**
  * Inicia la ejecución del plugin.
@@ -79,9 +79,9 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gameplanet-openpay.php';
  *
  * @since    1.0.0
  */
-function run_gameplanet_openpay() {
+function run_gameplanet_pagos_fijos() {
 
-	$plugin = new Gameplanet_Openpay();
+	$plugin = new Gameplanet_Pagos_Fijos();
 	$plugin->run();
 }
 
@@ -93,7 +93,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		echo '
 			<div class="error">
 				<p>
-					<strong>' . esc_html__('GamePlanet Openpay') . '</strong>' .
+					<strong>' . esc_html__('Gameplanet Pagos_Fijos') . '</strong>' .
 					sprintf( esc_html__( ' requiere que WooCommerce esté instalado y activado. Puedes descargar WooCommerce %s.' ),
 					'<a href="https://woocommerce.com/" target="_blank">aquí</a>' ) .
 				'</p>
@@ -111,7 +111,7 @@ if ( in_array( 'gameplanet/gameplanet.php', apply_filters( 'active_plugins', get
 		echo '
 			<div class="error">
 				<p>
-					<strong>' . esc_html__('GamePlanet Openpay' ) . '</strong>'.
+					<strong>' . esc_html__('Gameplanet Pagos_Fijos' ) . '</strong>'.
 					esc_html__(' requiere que el plugin principal de GamePlanet esté instalado y activado.' ) .
 				'</p>
 			</div>
@@ -125,16 +125,16 @@ if ( in_array( 'gameplanet/gameplanet.php', apply_filters( 'active_plugins', get
  * funciones ajax para el front
  * estan en la carpeta publica aunque no se si dejaralas ahi 
  */
-const AJAX_ACTION_OPENPAY_GETCARD = 'gp_openpay_ajax_getCardType';
-const AJAX_ACTION_GP_OPENPAY_AF_WEBHOOK = 'ajax_gp_openpay_antifraude_webhook';
+const AJAX_ACTION_PAGOS_FIJOS_GETCARD = 'gp_pagos_fijos_ajax_getCardType';
+const AJAX_ACTION_GP_PAGOS_FIJOS_AF_WEBHOOK = 'ajax_gp_pagos_fijos_antifraude_webhook';
 
-add_action( 'wp_ajax_'.AJAX_ACTION_OPENPAY_GETCARD, AJAX_ACTION_OPENPAY_GETCARD);
-add_action( 'wp_ajax_nopriv_'.AJAX_ACTION_OPENPAY_GETCARD, AJAX_ACTION_OPENPAY_GETCARD);
+add_action( 'wp_ajax_'.AJAX_ACTION_PAGOS_FIJOS_GETCARD, AJAX_ACTION_PAGOS_FIJOS_GETCARD);
+add_action( 'wp_ajax_nopriv_'.AJAX_ACTION_PAGOS_FIJOS_GETCARD, AJAX_ACTION_PAGOS_FIJOS_GETCARD);
 
-add_action( 'wp_ajax_'.AJAX_ACTION_GP_OPENPAY_AF_WEBHOOK, AJAX_ACTION_GP_OPENPAY_AF_WEBHOOK);
-add_action( 'wp_ajax_nopriv_'.AJAX_ACTION_GP_OPENPAY_AF_WEBHOOK, AJAX_ACTION_GP_OPENPAY_AF_WEBHOOK);
+add_action( 'wp_ajax_'.AJAX_ACTION_GP_PAGOS_FIJOS_AF_WEBHOOK, AJAX_ACTION_GP_PAGOS_FIJOS_AF_WEBHOOK);
+add_action( 'wp_ajax_nopriv_'.AJAX_ACTION_GP_PAGOS_FIJOS_AF_WEBHOOK, AJAX_ACTION_GP_PAGOS_FIJOS_AF_WEBHOOK);
 
-add_action('woocommerce_api_gp_openpay_confirm', 'gp_openpay_woocommerce_confirm', 10, 0);
-add_action('template_redirect', 'gp_openpay_wc_custom_redirect_after_purchase', 0);
+add_action('woocommerce_api_gp_pagos_fijos_confirm', 'gp_pagos_fijos_woocommerce_confirm', 10, 0);
+add_action('template_redirect', 'gp_pagos_fijos_wc_custom_redirect_after_purchase', 0);
 
-run_gameplanet_openpay();
+run_gameplanet_pagos_fijos();

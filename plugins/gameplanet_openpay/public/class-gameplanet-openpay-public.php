@@ -70,12 +70,10 @@ class Gameplanet_Openpay_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		$total       = WC()->cart->total;
+		$total       = WC()->cart->get_total('');
 		$msi         = get_option('gp_openpay_msi', null);
-		$min_msi     = (float) get_option('gp_openpay_minimum_amount_interest_free', 1);
 	
-		$msi_disponibles = is_array($msi) && !empty($msi) && (float)$total>=$min_msi; //si es un array con algo dentro es que si hay meses
-		
+		$msi_disponibles = is_array($msi) && !empty($msi) ; //si es un array con algo dentro es que si hay meses
 		$is_sandbox = get_option('gp_openpay_sandbox') == 'no'?false:true;
 		$key_prefix = $is_sandbox?'test':'live';//que claves su usaran
 
@@ -85,23 +83,22 @@ class Gameplanet_Openpay_Public {
 		wp_localize_script($this->gameplanet_openpay, 'gp_openpay_ajax_param', array(
 			'ajaxurl'        => admin_url('admin-ajax.php'),
 			'action_getcard' => AJAX_ACTION_OPENPAY_GETCARD,
+			'action_af_log' => AJAX_ACTION_GP_OPENPAY_AF_WEBHOOK,
 		));
 		wp_localize_script($this->gameplanet_openpay, 'gp_openpay', array(
 			'id'             => get_option('gp_openpay_'.$key_prefix.'_merchant_id'),
 			'key'             => get_option('gp_openpay_'.$key_prefix.'_publishable_key'),
-			'cart_total'      => floatval($total),
+			'cart_total'      => $total,
 			'msi_disponibles' => $msi_disponibles,
 			'is_sandbox'      => $is_sandbox,
+			'current_user_id' => get_user_meta(get_current_user_id(), 'id_gp', true)
 		));
 	}
 
 
 	public function gp_openpay_init(){
-		if( current_user_can( 'manage_options' )){
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gameplanet-openpay-gateway.php';
 			Gp_Openpay_Gateway::class;
-		}
-		
 	}
 
 		

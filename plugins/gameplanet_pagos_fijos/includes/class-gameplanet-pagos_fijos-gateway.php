@@ -9,11 +9,11 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
   public function __construct()
   {
     $this->openpay = 0;
-    $this->id = 'gp_openpay';
+    $this->id = 'gp_pagos_fijos';
     $this->has_fields = true;
     $this->method_title = 'GP Openpay';
     $this->title = 'Tarjeta de debito o credito';
-    $this->method_description = 'Permite pagar con trajetas de credito y debito (gameplanet_openpay).';
+    $this->method_description = 'Permite pagar con trajetas de credito y debito (gameplanet_pagos_fijos).';
     $this->init_form_fields();
     $this->init_settings();
     
@@ -33,17 +33,17 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
   // agrega mensaje con cantidad de openpay
   public function get_icon()
   {
-    $accept_msi = gp_openpay_obtener_msi_disponibilidad();
+    $accept_msi = gp_pagos_fijos_obtener_msi_disponibilidad();
     if($accept_msi){
       echo('
           <div class="gp_tooltip">
-          <img class="gp_openpay_icon_credit_cards" alt="" src="https://cdn.gameplanet.com/wp-content/uploads/2022/12/05165405/msi_credit_cards.png">
+          <img class="gp_pagos_fijos_icon_credit_cards" alt="" src="https://cdn.gameplanet.com/wp-content/uploads/2022/12/05165405/msi_credit_cards.png">
             <span class="tooltiptext">Meses Sin Intereses en productos seleccionados con un monto minimo de compra.</span>
           </div>
       ');
     }
     else{
-      echo('<img class="gp_openpay_icon_credit_cards" alt="" src="https://cdn.gameplanet.com/wp-content/uploads/2022/12/05165056/credit_cards.png">');
+      echo('<img class="gp_pagos_fijos_icon_credit_cards" alt="" src="https://cdn.gameplanet.com/wp-content/uploads/2022/12/05165056/credit_cards.png">');
     }
   }
   public function get_supports($supports){
@@ -56,7 +56,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
     $this->form_fields = array(
       'enabled' => array(
         'title'       => __('Enable/Disable', 'woocommerce'),
-        'label'       => __('Activar GamePlanet Openpay', 'woocommerce'),
+        'label'       => __('Activar Gameplanet Pagos_Fijos', 'woocommerce'),
         'type'        => 'checkbox',
         'description' => '',
         'default'     => 'no'
@@ -187,40 +187,40 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
   }
   public function payment_fields()
   {
-    include plugin_dir_path(dirname(__FILE__)) . 'public/partials/gameplanet-openpay-public-display.php';
+    include plugin_dir_path(dirname(__FILE__)) . 'public/partials/gameplanet-pagos_fijos-public-display.php';
   }
   public function getMsi() {
     return array('3' => '3 meses', '6' => '6 meses', '9' => '9 meses', '12' => '12 meses', '18' => '18 meses');
   }
   public function validate_fields()
   {
-    gp_openpay_log('validate_fields',"validando datos del formulario");
+    gp_pagos_fijos_log('validate_fields',"validando datos del formulario");
     if(!isset($_POST['payment_method']) && $_POST['payment_method'] != $this->id){
-      gp_openpay_log('validate_fields', 'GOV-001 El metodo de pago no es reconocido:'.$_POST['payment_method']);
+      gp_pagos_fijos_log('validate_fields', 'GOV-001 El metodo de pago no es reconocido:'.$_POST['payment_method']);
       wc_add_notice("Algo salió mal, inténtelo nuevamente o use otro método de pago. CODE: GOV-001", 'error');
       return;
     }
     if(!isset($_POST['openpay-card-cvc']) && empty($_POST['openpay-card-cvc'])){
-      gp_openpay_log('validate_fields', 'GOV-002 NO se recibio CVV2',$_POST);
+      gp_pagos_fijos_log('validate_fields', 'GOV-002 NO se recibio CVV2',$_POST);
       wc_add_notice("Algo salió mal, inténtelo nuevamente o use otro método de pago. CODE: GOV-002", 'error');
       return;
     }
     if(!isset($_POST['device_session_id']) && empty($_POST['device_session_id'])){
-      gp_openpay_log('validate_fields', 'GOV-003 NO se recibio device_session_id',$_POST);
+      gp_pagos_fijos_log('validate_fields', 'GOV-003 NO se recibio device_session_id',$_POST);
       wc_add_notice("Algo salió mal, inténtelo nuevamente o use otro método de pago. CODE: GOV-003", 'error');
       return;
     }
     if(!isset($_POST['openpay_token']) && empty($_POST['openpay_token'])){
-      gp_openpay_log('validate_fields', 'GOV-004 NO se recibio openpay_token',$_POST);
+      gp_pagos_fijos_log('validate_fields', 'GOV-004 NO se recibio openpay_token',$_POST);
       wc_add_notice("Algo salió mal, inténtelo nuevamente o use otro método de pago. CODE: GOV-004", 'error');
       return;
     }
     if(!isset($_POST['openpay_card_number']) && empty($_POST['openpay_card_number'])){
-      gp_openpay_log('validate_fields', 'GOV-005 NO se recibio openpay_card_number',$_POST);
+      gp_pagos_fijos_log('validate_fields', 'GOV-005 NO se recibio openpay_card_number',$_POST);
       wc_add_notice("Algo salió mal, inténtelo nuevamente o use otro método de pago. CODE: GOV-005", 'error');
       return;
     }
-    gp_openpay_log('validate_fields',"Todo bien, continua",$_POST);
+    gp_pagos_fijos_log('validate_fields',"Todo bien, continua",$_POST);
     
   }
   // procesar pago
@@ -229,7 +229,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
     $nota_orden = "<strong>** Pago con Tarjeta **</strong>" . PHP_EOL;
 
     $this->nonce = isset($_POST['woocommerce-process-checkout-nonce'])?$_POST['woocommerce-process-checkout-nonce']:time();
-    gp_openpay_log($this->nonce.' process_payment', '1. Inicio proceso de cobro openpay GP',$_POST);
+    gp_pagos_fijos_log($this->nonce.' process_payment', '1. Inicio proceso de cobro openpay GP',$_POST);
     //recuperamos informacion
     $device_session_id = isset($_POST['device_session_id']) ? wc_clean($_POST['device_session_id']) : '';
     $openpay_token = $_POST['openpay_token'];
@@ -240,7 +240,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
     //El payment plan dictamina los msi, puede que  recibamos la orden justo cuando quitamos lo meses se valida esto
     $generate_payment_plan = $this->get_payment_plan();        
     if($generate_payment_plan['success'] === false){
-      gp_openpay_log($this->nonce.' process_payment', '1.2 error en los msi',json_encode($generate_payment_plan));
+      gp_pagos_fijos_log($this->nonce.' process_payment', '1.2 error en los msi',json_encode($generate_payment_plan));
 
       wc_add_notice($generate_payment_plan['message'] , 'error');
       return;
@@ -251,7 +251,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
     $openpay_cargo = $this->openpay_procesar_orden($device_session_id,$openpay_token,$payment_plan);
     if(!$openpay_cargo){
       //pasamos la orden a fail
-      gp_openpay_log($this->nonce.' process_payment','CARGO FALLIDO');
+      gp_pagos_fijos_log($this->nonce.' process_payment','CARGO FALLIDO');
 
       $this->order->update_meta_data('_gp_estatus_domicilio', 'C');
       $this->order->update_status('failed', "<strong>** No se pudo generar el cargo a la tarjeta **</strong>" . PHP_EOL);
@@ -263,10 +263,10 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
 
     //verificamos si el cargo viene con 3D
     $tipo_cargo =get_post_meta( $this->order->get_id(),'_openpay_charge_type',true);
-    gp_openpay_log($this->nonce.' process_payment','3.2 Cargo realizado tipo '.$tipo_cargo);
+    gp_pagos_fijos_log($this->nonce.' process_payment','3.2 Cargo realizado tipo '.$tipo_cargo);
 
     if($tipo_cargo == '3d'){
-      gp_openpay_log($this->nonce.' process_payment','4. El cargo con con 3D secure se redirigira a: ',get_post_meta($this->order->get_id(), '_openpay_3d_secure_url', true));
+      gp_pagos_fijos_log($this->nonce.' process_payment','4. El cargo con con 3D secure se redirigira a: ',get_post_meta($this->order->get_id(), '_openpay_3d_secure_url', true));
     }
     else if($tipo_cargo == 'auth'){
       //actualizamos el estatus
@@ -291,8 +291,8 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
    */
   private function get_payment_plan(){
     //vemos si hay meses sin interses y se cumple el monto minimo
-    $accept_msi = gp_openpay_obtener_msi_disponibilidad();
-    gp_openpay_log($this->nonce.' process_payment', '1.1.8',$accept_msi);
+    $accept_msi = gp_pagos_fijos_obtener_msi_disponibilidad();
+    gp_pagos_fijos_log($this->nonce.' process_payment', '1.1.8',$accept_msi);
     
     if($accept_msi){
       //si hay meses, recuperamos las mensualidades si es que viene
@@ -352,11 +352,11 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
    */
   private function openpay_procesar_orden($device_session_id,$openpay_token,$payment_plan){
     try {
-      gp_openpay_log($this->nonce.' openpay_procesar_orden', '2. empieza a generar request');
+      gp_pagos_fijos_log($this->nonce.' openpay_procesar_orden', '2. empieza a generar request');
 
       $amount = number_format((float)$this->order->get_total(), 2, '.', '');
       $openpay_customer = $this->openpay_get_customer();
-      gp_openpay_log($this->nonce.' openpay_procesar_orden','2.1 Cliente encontrado',$openpay_customer);
+      gp_pagos_fijos_log($this->nonce.' openpay_procesar_orden','2.1 Cliente encontrado',$openpay_customer);
       if(!$openpay_customer){
         return false;
       }
@@ -377,11 +377,11 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
       $charge_data = $this->analizarTipoCargo($charge_data);
      
       //creamos el cargo al cliente
-      gp_openpay_log($this->nonce.' openpay_procesar_orden','2.9 se manda el cargo',$charge_data);
+      gp_pagos_fijos_log($this->nonce.' openpay_procesar_orden','2.9 se manda el cargo',$charge_data);
       try {
         $charge = $this->api_openpay_call("/customers/".$openpay_customer['id']."/charges",'POST',$charge_data,true,'CREATE CHARGE');
         
-        gp_openpay_log($this->nonce.' openpay_procesar_orden','3. Se creo el cargo al cliente',$charge);
+        gp_pagos_fijos_log($this->nonce.' openpay_procesar_orden','3. Se creo el cargo al cliente',$charge);
         
         if($this->is_sandbox){
           //guardamos la info usuario
@@ -409,16 +409,16 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
           $this->order->set_transaction_id( (string)$charge['id'] );
           $this->order->save();
         } catch (\Throwable $th) {
-          gp_openpay_log($this->nonce.'No se puede asignar el id transaction',$charge['id']);
+          gp_pagos_fijos_log($this->nonce.'No se puede asignar el id transaction',$charge['id']);
         }
-        gp_openpay_log($this->nonce.' id_transaccion:',$this->order->get_transaction_id());
+        gp_pagos_fijos_log($this->nonce.' id_transaccion:',$this->order->get_transaction_id());
 
 
         $this->order->add_order_note($nota_orden);
         return true;
       } catch (\Exception $e) {
         //fallo algo al crear el cargo
-        gp_openpay_log($this->nonce.' openpay_procesar_orden','3.1 No se pudo crear el cargo');
+        gp_pagos_fijos_log($this->nonce.' openpay_procesar_orden','3.1 No se pudo crear el cargo');
         $this->api_error($e);
         return false;
       }
@@ -437,7 +437,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
    * esto para conservar los que ya se habian creado con este plugin
    */
   private function openpay_get_customer(){
-    gp_openpay_log($this->nonce." openpay_get_customer:", "Obtener infor del cliente");
+    gp_pagos_fijos_log($this->nonce." openpay_get_customer:", "Obtener infor del cliente");
 
     $id_customer = null;
     if ($this->is_sandbox) {
@@ -445,7 +445,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
     } else {
         $id_customer = get_user_meta(get_current_user_id(), '_openpay_customer_id', true);
     }  
-    gp_openpay_log($this->nonce." openpay_get_customer:", "Metakey obtenido: ".$id_customer);
+    gp_pagos_fijos_log($this->nonce." openpay_get_customer:", "Metakey obtenido: ".$id_customer);
     
     //si el usuario no tiene el metakey lo creamos
     if(is_null($id_customer) || empty($id_customer)){
@@ -455,7 +455,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
 
     //recuperamos la informacion del cliente en openpay (Talvez se puede evitar esto ya que solo necesitamos el id, lo mantenemos como validacion)
     try {
-      gp_openpay_log($this->nonce." openpay_get_customer:", "Se solicita el cliente de openpay");
+      gp_pagos_fijos_log($this->nonce." openpay_get_customer:", "Se solicita el cliente de openpay");
       $cliente = $this->api_openpay_call('customers/'.$id_customer,'GET',null,true,'GET CUSTOMER');
       return $cliente;
     } catch (Exception $e) {
@@ -472,7 +472,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
 
   private function openpay_create_customer()
   {
-    gp_openpay_log($this->nonce." openpay_create_customer:", "Se crea el cliente");
+    gp_pagos_fijos_log($this->nonce." openpay_create_customer:", "Se crea el cliente");
 
     $customer_data = array(
       'external_id' => get_user_meta(get_current_user_id(), 'id_gp', true),
@@ -526,14 +526,14 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
       //si es menor que la cantidad de peligro entonces enviamos con 3D secure
       //si el charge_type es 3d se manda siempre 3D secure
       if(($this->settings['charge_type']=='detect' && $charge_data['amount'] >= (float) $this->settings['min_value_to_3d']) || $this->settings['charge_type']=='3d'){
-        gp_openpay_log($this->nonce.' analizarTipoCargo','2.8 se manda el cargo directo con 3D');
+        gp_pagos_fijos_log($this->nonce.' analizarTipoCargo','2.8 se manda el cargo directo con 3D');
         update_post_meta($this->order->get_id(), '_openpay_charge_type', '3d');
         $charge_data['use_3d_secure'] = true;
-        $charge_data['redirect_url'] =  site_url('/').'?wc-api=gp_openpay_confirm';
+        $charge_data['redirect_url'] =  site_url('/').'?wc-api=gp_pagos_fijos_confirm';
       }
       else{
         //es mayor a la cantidad entonces se hara una pre autorizacion para despues hacer la autorizacion
-        gp_openpay_log($this->nonce.' analizarTipoCargo','2.8 se manda una cargo directo');
+        gp_pagos_fijos_log($this->nonce.' analizarTipoCargo','2.8 se manda una cargo directo');
         update_post_meta($this->order->get_id(), '_openpay_charge_type', 'direct');
         //$charge_data['capture'] = false;//dejamos pendiente el cargo preauthorizado 
 
@@ -547,7 +547,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
    */
   public function api_openpay_call($endpoint,$method = 'GET',$params=null,$force_fail = true,$action = "EMPTY"){
     
-    gp_openpay_log($this->nonce." api_openpay_call:".$endpoint, "Inicia Peticion", $params);
+    gp_pagos_fijos_log($this->nonce." api_openpay_call:".$endpoint, "Inicia Peticion", $params);
     /*Le llame diferente a proposito para que no sepan como se pasan a la API*/
     $args = array(
       'timeout' => 120,
@@ -578,28 +578,28 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
     // Si hay un error
     if (is_wp_error($response)) {
       $error_message = $response->get_error_message();
-      gp_openpay_log($this->nonce." api_openpay_call:".$endpoint, "Respuesta de la API", $error_message);
+      gp_pagos_fijos_log($this->nonce." api_openpay_call:".$endpoint, "Respuesta de la API", $error_message);
       throw new Exception("Error en la peticion: ".$endpoint, 501);
       return false;
     } else {
       $res = json_decode($response['body'],true);
       //recoleccion de informacion antifraudes
       if($this->order){
-        gp_openpay_antifraude_webhook($action,$this->order->get_id(),$params,$res);
+        gp_pagos_fijos_antifraude_webhook($action,$this->order->get_id(),$params,$res);
 
       }
 
       if(isset($res['error_code']) && $force_fail){
-        gp_openpay_log($this->nonce." api_openpay_call:".$endpoint, "Error en la peticion", $res);
+        gp_pagos_fijos_log($this->nonce." api_openpay_call:".$endpoint, "Error en la peticion", $res);
         throw new Exception($res['description'], $res['error_code']);
         return false;
       }
-      gp_openpay_log($this->nonce." api_openpay_call:".$endpoint, "Peticion completa");
+      gp_pagos_fijos_log($this->nonce." api_openpay_call:".$endpoint, "Peticion completa");
       return $res;
     }
   }
   private function api_error(Exception $e){
-    gp_openpay_log(($this->nonce??$this->order->get_id())." api_error:", $e->getCode().': '.$e->getMessage());
+    gp_pagos_fijos_log(($this->nonce??$this->order->get_id())." api_error:", $e->getCode().': '.$e->getMessage());
     wc_add_notice("Algo salió mal, inténtelo nuevamente o use otro método de pago. Code: GPOP-". $e->getCode(), 'error');
     $nota_orden = "GP Openpay". PHP_EOL .  "PROCESO CANCELADO" . PHP_EOL . "Opepay no pudo hacer el cargo: " . $e->getCode().': '.$e->getMessage();
     $this->order->add_order_note($nota_orden);
@@ -624,7 +624,7 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
       return false;
     }
     $this->order = wc_get_order($order_id);
-    gp_openpay_log($this->order_id." process_refund:","INCIA devolucion de orden");
+    gp_pagos_fijos_log($this->order_id." process_refund:","INCIA devolucion de orden");
 
     if ($this->is_sandbox) {
       $id_customer_op = $this->order->get_meta('_openpay_customer_sandbox_id',true);
@@ -644,18 +644,18 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
       $reembolso = $this->api_openpay_call($endpoint,'POST',$data);
       
       if(isset($reembolso['refund'])){
-        gp_openpay_log($this->order_id." process_refund:","Reembolso exitoso");
+        gp_pagos_fijos_log($this->order_id." process_refund:","Reembolso exitoso");
         $nota_orden = "GP Openapy". PHP_EOL .  "Reembolso Exitoso" . PHP_EOL . " id operacion: ".$reembolso['refund']['id'];
         $this->order->add_order_note($nota_orden);
         return true;
       }
-      gp_openpay_log($this->order_id." process_refund:","Reembolso Falló",$reembolso);
+      gp_pagos_fijos_log($this->order_id." process_refund:","Reembolso Falló",$reembolso);
 
       $nota_orden = "GP Openapy". PHP_EOL .  "Reembolso Falló" . PHP_EOL . "Motivo desocnocido revisar Log";
         $this->order->add_order_note($nota_orden);
         return false;
     } catch (Exception $e) {
-      gp_openpay_log($this->order_id." process_refund:","Reembolso Falló - exception",$e->getCode().''.$e->getMessage());
+      gp_pagos_fijos_log($this->order_id." process_refund:","Reembolso Falló - exception",$e->getCode().''.$e->getMessage());
 
       $nota_orden = "GP Openapy". PHP_EOL .  "Reembolso Falló" . PHP_EOL . $e->getCode().''.$e->getMessage();
       $this->order->add_order_note($nota_orden);
@@ -669,15 +669,15 @@ class Gp_Openpay_Gateway extends WC_Payment_Gateway
 }
 
 /**Se agrega en la seccion de PAgos de Woocomerce */
-function gp_openpay_add_creditcard_gateway($methods)
+function gp_pagos_fijos_add_creditcard_gateway($methods)
 {
   array_push($methods, 'Gp_Openpay_Gateway');
   return $methods;
 }
 
-add_filter('woocommerce_payment_gateways', 'gp_openpay_add_creditcard_gateway');
+add_filter('woocommerce_payment_gateways', 'gp_pagos_fijos_add_creditcard_gateway');
 // para quitar opción de pago
-function gp_openpay_wallet_unset($gateways)
+function gp_pagos_fijos_wallet_unset($gateways)
 {
   unset($gateways['openpay_gp']);
   return $gateways;

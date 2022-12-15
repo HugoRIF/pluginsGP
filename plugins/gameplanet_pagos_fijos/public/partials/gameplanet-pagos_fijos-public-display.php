@@ -8,19 +8,19 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Gameplanet_Openpay
- * @subpackage Gameplanet_Openpay/public/partials
+ * @package    Gameplanet_Pagos_Fijos
+ * @subpackage Gameplanet_Pagos_Fijos/public/partials
  */
-  $msi         = get_option('gp_openpay_msi', null);
+  $msi         = get_option('gp_pagos_fijos_msi', null);
 
-  $msi_disponibles =  gp_openpay_obtener_msi_disponibilidad();
+  $msi_disponibles =  gp_pagos_fijos_obtener_msi_disponibilidad();
   $Cart        = WC()->cart;
   $total_order =  $Cart->get_total("");
-  $msi_aplicables = gp_openpay_msi_aplicables($msi,$total_order);
-  $label_next_promo = gp_openpay_label_next_promo($msi_aplicables,$msi,$total_order);
+  $msi_aplicables = gp_pagos_fijos_msi_aplicables($msi,$total_order);
+  $label_next_promo = gp_pagos_fijos_label_next_promo($msi_aplicables,$msi,$total_order);
 ?>
-<input type="hidden" id="gp_openpay_total_order" value="<?php echo($total_order) ?>">
-<div id="gp_openpay_form" class="plugin_general-form">
+<input type="hidden" id="gp_pagos_fijos_total_order" value="<?php echo($total_order) ?>">
+<div id="gp_pagos_fijos_form" class="plugin_general-form">
   <div style="overflow: hidden; position: relative;">
     <div class="ajax-loader"></div>
     
@@ -33,7 +33,7 @@
         <span class="loader-general blue"></span>
       </div>
 
-      <div id="gp_openpay_msi-container" style="margin-bottom:0.5em">
+      <div id="gp_pagos_fijos_msi-container" style="margin-bottom:0.5em">
         <div class="form-row form-row-wide">
           <label for="openpay_month_interest_free" class="label_openpay_month_interest_free">Plan de pago <span class="required">*</span> 
             <span class="msi_label gp_tooltip">
@@ -41,7 +41,7 @@
               <p class="tooltiptext" style="margin-top:60px"> Meses sin intereses con tarjeta de credito</p>
             </span>
           </label>
-          <div class="gp_openpay_next_promo"><?php echo($label_next_promo)?></div>
+          <div class="gp_pagos_fijos_next_promo"><?php echo($label_next_promo)?></div>
           <select name="openpay_month_interest_free" id="openpay_month_interest_free" class="openpay-select" style="margin-bottom:0.5em">
             <option value="1">Pago en una sola exhibición</option>
             <?php
@@ -58,7 +58,7 @@
           </select>
           <label id="openpay_month_interest_free_warning" class="warning" for="openpay_month_interest_free" style="display:none"></label>
         </div>
-        <div id="gp_openpay_total-monthly-payment" class="form-row form-row-wide " style="display:none">
+        <div id="gp_pagos_fijos_total-monthly-payment" class="form-row form-row-wide " style="display:none">
           <span id="monthly-payment_label"></span>
           <strong class="openpay-total">$ <span id="monthly-payment"> </span></strong> 
         </div>
@@ -97,7 +97,7 @@
       </div>
       <div class="form-row form-row-last openpay-card-cvc woocommerce-validated">
         <label for="openpay-card-cvc">CVV <span class="required">*</span></label>
-        <input id="openpay-card-cvc" name="openpay-card-cvc" maxlength="4" class="input-text wc-credit-card-form-card-cvc gp_openpay-card-input-cvc" type="text" autocomplete="off" placeholder="CVC" data-openpay-card="cvv2">
+        <input id="openpay-card-cvc" name="openpay-card-cvc" maxlength="4" class="input-text wc-credit-card-form-card-cvc gp_pagos_fijos-card-input-cvc" type="text" autocomplete="off" placeholder="CVC" data-openpay-card="cvv2">
         <label id="openpay-card-cvc_error" class="error" for="openpay-card-cvc" style="display:none"></label>
 
       </div>

@@ -2,16 +2,16 @@
     'use strict';
     const current_card_type = '';
     $(document).ready(function (){
-      console.log(gp_openpay);
+      console.log(gp_pagos_fijos);
       //solo cuando estemos en el checkout
-      if( $("#gp_openpay_form").length){
+      if( $("#gp_pagos_fijos_form").length){
         iniciarGpOpenPay();
       }
     });
     function iniciarGpOpenPay(){
-      OpenPay.setId(gp_openpay.id);
-      OpenPay.setApiKey(gp_openpay.key);
-      OpenPay.setSandboxMode(gp_openpay.is_sandbox);
+      OpenPay.setId(gp_pagos_fijos.id);
+      OpenPay.setApiKey(gp_pagos_fijos.key);
+      OpenPay.setSandboxMode(gp_pagos_fijos.is_sandbox);
       const deviceSessionId = OpenPay.deviceData.setup('checkout');
       const formulario =$('form.checkout');
       $("#device_session_id").val(deviceSessionId);
@@ -32,7 +32,7 @@
           console.log(payment_method);
 
           //si es openpay continuamos
-          if(payment_method === 'gp_openpay'){
+          if(payment_method === 'gp_pagos_fijos'){
             console.log('inicia proceso openpay');
 
             return iniciaPagoOpenPay();
@@ -42,9 +42,9 @@
       function iniciaPagoOpenPay(){
         console.log('pago con tarjeta utilizando openpay');
         //desactivamos el formulario
-        gp_openpay_bloquearFormulario();
+        gp_pagos_fijos_bloquearFormulario();
         //validacion de formulario
-        const validate = gp_openpay_validate();
+        const validate = gp_pagos_fijos_validate();
         if(!validate){
           console.log('formulario invalido');
           // no es valido marcamos el error y mandamos false para evitar submit
@@ -66,7 +66,7 @@
           expiration_year: $("#openpay-card-expiry_year").val().trim()        
         };
 
-        OpenPay.token.create(data_token, gp_openpay_cb_token_success, gp_openpay_cb_token_fail);
+        OpenPay.token.create(data_token, gp_pagos_fijos_cb_token_success, gp_pagos_fijos_cb_token_fail);
         //siempre regresa false el encargado de hacer el submit es el callback del success
         return false;
       }
@@ -91,10 +91,10 @@
         if(value.length < 4){
           $("#openpay_month_interest_free_warning").hide();
         }
-        if(value.length == 8 && gp_openpay.msi_disponibles){
+        if(value.length == 8 && gp_pagos_fijos.msi_disponibles){
           console.log('Consultamos tipo de tarjeta');
 
-          gp_openpay_getCardType(value);
+          gp_pagos_fijos_getCardType(value);
         }
       })
       //formateo de fecha de expiracion
@@ -128,14 +128,14 @@
        * 
        * @return 
        */
-      function gp_openpay_validate(){
+      function gp_pagos_fijos_validate(){
         //letras, acentos y expeciales
         const pattern_letters = new RegExp('^[A-ZÁÉÍÓÚÑ,. ]+$','i');
         const pattern_numeric = new RegExp('^[0-9 ]+$','i');
         let success = true;
         //Nombre no vacio y valido
         if ($('#openpay-holder-name').val().length < 1 || !pattern_letters.test($('#openpay-holder-name').val())) {
-          gp_openpay_error_callback({data:{error_code:1}});
+          gp_pagos_fijos_error_callback({data:{error_code:1}});
           success =  false;
         }
         
@@ -143,7 +143,7 @@
         //Numero de tarjeta
         const card_number = $('#openpay-card-number').val().replace(' ','').trim();
         if (card_number.length < 16 || !pattern_numeric.test(card_number)) {
-          gp_openpay_error_callback({data:{error_code:2}});
+          gp_pagos_fijos_error_callback({data:{error_code:2}});
           success =  false;
         }
         else{
@@ -151,7 +151,7 @@
           const op_card = OpenPay.card.validateCardNumber(card_number);
           console.log('tarjeta se valida',card_number,op_card);
           if(!op_card){
-            gp_openpay_error_callback({data:{error_code:101}});
+            gp_pagos_fijos_error_callback({data:{error_code:101}});
             success =  false;
           }
         }
@@ -161,19 +161,19 @@
         const exp_y = $('#openpay-card-expiry_year').val().replace(' ','').trim();
         
         if(!OpenPay.card.validateExpiry(exp_m,exp_y)){
-          gp_openpay_error_callback({data:{error_code:3,message:'La fecha de expiración es invalida',type:'year'}});
+          gp_pagos_fijos_error_callback({data:{error_code:3,message:'La fecha de expiración es invalida',type:'year'}});
           success =  false;
         }
 
         // CVV no vacio y valido
         if ( $('#openpay-card-cvc').val().length < 3  || !pattern_numeric.test($('#openpay-card-cvc').val())) {
-          gp_openpay_error_callback({data:{error_code:4}});
+          gp_pagos_fijos_error_callback({data:{error_code:4}});
           success =  false;
         }
         else{
           //CVC por openpay
           if(!OpenPay.card.validateCVC($('#openpay-card-cvc').val())){
-            gp_openpay_error_callback({data:{error_code:104}});
+            gp_pagos_fijos_error_callback({data:{error_code:104}});
             success =  false;
           }
         }
@@ -181,7 +181,7 @@
       }
 
     
-      function gp_openpay_error_callback(response){
+      function gp_pagos_fijos_error_callback(response){
         const {data} = response;
         switch (data.error_code) {
           case 1://Nombre
@@ -224,12 +224,12 @@
        * se envia el formulario para crear la orden
        * 
        */
-      function gp_openpay_cb_token_success(response){
+      function gp_pagos_fijos_cb_token_success(response){
         console.log('token generado', response);
-        gp_openpay_af_log('TOKEN CARD SUCESS',
+        gp_pagos_fijos_af_log('TOKEN CARD SUCESS',
         {
           nombre:$('#openpay-holder-name').val(),
-          usuario:gp_openpay.current_user_id,
+          usuario:gp_pagos_fijos.current_user_id,
           tarjeta:$('#openpay-card-number').val().replace(' ','').trim(),
         },
         response
@@ -251,7 +251,7 @@
       * 
       * Enivamos el mensaje de error, se guarda la informacion y el log de por que no se logro 
       */
-      function gp_openpay_cb_token_fail(response){
+      function gp_pagos_fijos_cb_token_fail(response){
         console.log('token fallo', response);
         let msg = "";
         switch (response.data.error_code) {
@@ -292,12 +292,12 @@
                 break;
         }
         //mostramos los errores
-        gp_openpay_error_callback({data:{error_code:400,message:msg}});
+        gp_pagos_fijos_error_callback({data:{error_code:400,message:msg}});
         //guardamos el log del evento
-        gp_openpay_af_log('TOKEN CARD FAIL',
+        gp_pagos_fijos_af_log('TOKEN CARD FAIL',
         {
           nombre:$('#openpay-holder-name').val(),
-          usuario:gp_openpay.current_user_id,
+          usuario:gp_pagos_fijos.current_user_id,
           tarjeta:$('#openpay-card-number').val().replace(' ','').trim(),
         },
         response
@@ -310,9 +310,9 @@
       /**
        * Solo bloqueamos pero ocupa mucho espacio esto
        */
-      function gp_openpay_bloquearFormulario(){
+      function gp_pagos_fijos_bloquearFormulario(){
         formulario.block({
-          blockMsgClass: 'gp_openpay_progress-wrapper',
+          blockMsgClass: 'gp_pagos_fijos_progress-wrapper',
           message:`
             <div>
               <span class="loader-general blue "></span>
@@ -336,17 +336,17 @@
        * 
        * @param {string} cardBin primeros 8 digitos de la tarjeta ingresada
        */
-      function gp_openpay_getCardType(cardBin){
+      function gp_pagos_fijos_getCardType(cardBin){
 
         //mandamos a carga el div de msi
         $("#msi_loader").show();
          //se envia al back
          const data = new FormData();
-         data.append('action',gp_openpay_ajax_param.action_getcard);
+         data.append('action',gp_pagos_fijos_ajax_param.action_getcard);
          data.append('cardBin',cardBin);
         
          const request = new XMLHttpRequest();
-         request.open('POST',gp_openpay_ajax_param.ajaxurl,true);
+         request.open('POST',gp_pagos_fijos_ajax_param.ajaxurl,true);
          //callback - resultado de la peticion
          request.onload = function(){
           try {
@@ -355,7 +355,7 @@
            const response = JSON.parse(this.response);
             if(!response.success){
               console.log('Tarjeta no reconocida');
-              gp_openpay_cancelar_promo_msi();
+              gp_pagos_fijos_cancelar_promo_msi();
 
               return;
             }
@@ -369,11 +369,11 @@
               selected_promo =0;
             }
             if(card_type !== 'CREDIT' && selected_promo>1){
-              gp_openpay_cancelar_promo_msi();
+              gp_pagos_fijos_cancelar_promo_msi();
             }
           } catch (error) {
             console.log('error en la repsuesta', error);
-            gp_openpay_cancelar_promo_msi();
+            gp_pagos_fijos_cancelar_promo_msi();
 
           }
           $("#msi_loader").hide();
@@ -387,10 +387,10 @@
         
          request.send(data);
       }
-      function gp_openpay_cancelar_promo_msi(){
+      function gp_pagos_fijos_cancelar_promo_msi(){
         try {
           //ocultamos el mensaje de parcialidades
-          $("#gp_openpay_total-monthly-payment").hide();
+          $("#gp_pagos_fijos_total-monthly-payment").hide();
           //regresamos a una parcialidad
           $("#openpay_month_interest_free").val('1');
           //mostramos mensaje
@@ -405,14 +405,14 @@
       $(document).on('change','#openpay_month_interest_free',function(event) {
         const msi = $(this).val();
         if(msi == 1){
-          $("#gp_openpay_total-monthly-payment").hide();
+          $("#gp_pagos_fijos_total-monthly-payment").hide();
           return;
         }
-        const total_order = $("#gp_openpay_total_order").val();
+        const total_order = $("#gp_pagos_fijos_total_order").val();
         const result = total_order/msi;
         $("#monthly-payment_label").text('Pagarías '+msi+' mensualidades de: ');
         $('#monthly-payment').text(result.toFixed(2));
-        $("#gp_openpay_total-monthly-payment").show();
+        $("#gp_pagos_fijos_total-monthly-payment").show();
 
         //limpiamos el formulario
         $("#openpay_month_interest_free_warning").hide();
@@ -424,15 +424,15 @@
 
       });
 
-      function gp_openpay_af_log(event,internal,result){
+      function gp_pagos_fijos_af_log(event,internal,result){
          const data = new FormData();
-         data.append('action',gp_openpay_ajax_param.action_af_log);
+         data.append('action',gp_pagos_fijos_ajax_param.action_af_log);
          data.append('event',event);
          data.append('internal',JSON.stringify(internal));
          data.append('response',JSON.stringify(result));
         
          const request = new XMLHttpRequest();
-         request.open('POST',gp_openpay_ajax_param.ajaxurl,true);
+         request.open('POST',gp_pagos_fijos_ajax_param.ajaxurl,true);
          request.onload = function(){
           //no hacemos nada solo se espera guardar correctsamente
          }

@@ -1,11 +1,11 @@
 <?php
 
-function gp_openpay_log($funcion, $paso, $entry = null)
+function gp_pagos_fijos_log($funcion, $paso, $entry = null)
   {
     $directorio = "./wp-content/gp/logs_openpay/";
 
     
-    $extencion = "_gp_openpay.log";
+    $extencion = "_gp_pagos_fijos.log";
 
     if (!file_exists($directorio)) {
       mkdir($directorio, 0755, true);
@@ -32,9 +32,9 @@ function gp_openpay_log($funcion, $paso, $entry = null)
 
     return $bytes;
   }
-function gp_openpay_ajax_getCardType(){
+function gp_pagos_fijos_ajax_getCardType(){
   try {
-    gp_openpay_log('Obtener tipo de tarjeta','Inicio');
+    gp_pagos_fijos_log('Obtener tipo de tarjeta','Inicio');
 
   //validaciones
   if(! is_user_logged_in()){
@@ -56,15 +56,15 @@ function gp_openpay_ajax_getCardType(){
   }
 
   //consulta a open pay
-  $merchant_id = get_option('gp_openpay_live_merchant_id');
+  $merchant_id = get_option('gp_pagos_fijos_live_merchant_id');
   $path       = sprintf('/%s/bines/man/%s', $merchant_id, $card_bin);
-  $is_sandbox = get_option('gp_openpay_sandbox','yes')=='no'?false:true;
+  $is_sandbox = get_option('gp_pagos_fijos_sandbox','yes')=='no'?false:true;
   //RECUERDA CAMBIAR EL TRUE POR FALSE en PRODUCCION ¿lo paso a una configuracion?
   $getCardType = requestOpenpay($path,'mx',$is_sandbox,null,null);
 
    //no se muy bien como cachar los errores de su API
   if(isset($getCardType['error_code'])){
-    gp_openpay_log('Obtener tipo de tarjeta','No se encontro tarjeta', $getCardType);
+    gp_pagos_fijos_log('Obtener tipo de tarjeta','No se encontro tarjeta', $getCardType);
     echo json_encode([
       "success"=>false,
       "message"=>"Informacion Tarjeta",
@@ -80,7 +80,7 @@ function gp_openpay_ajax_getCardType(){
   ]);
   die();
   } catch (Exception $e) {
-    gp_openpay_log('Obtener tipo de tarjeta','Error Intrerno', $e->getMessage());
+    gp_pagos_fijos_log('Obtener tipo de tarjeta','Error Intrerno', $e->getMessage());
 
     echo json_encode([
       "success"=>false,
@@ -93,12 +93,12 @@ function gp_openpay_ajax_getCardType(){
 }
 
 
-function gp_openpay_obtener_msi_disponibilidad(){
+function gp_pagos_fijos_obtener_msi_disponibilidad(){
   try {
          
     //leeemos si hay meses sin intereses
-    $msi         = get_option('gp_openpay_msi', null);
-    $msi_type    = get_option('gp_openpay_msi_type', '');                                        //a que productos se aplica
+    $msi         = get_option('gp_pagos_fijos_msi', null);
+    $msi_type    = get_option('gp_pagos_fijos_msi_type', '');                                        //a que productos se aplica
     $Cart        = WC()->cart;
     $total_order = (float) $Cart->get_total("");
     $items_order =  $Cart->get_cart();
@@ -122,8 +122,8 @@ function gp_openpay_obtener_msi_disponibilidad(){
         $msi_disponibles = $total_order>=$min_msi; 
         break;
       case 'meta':
-        $meta_key = get_option('gp_openpay_msi_product_meta_data_key', '');
-        $meta_value = get_option('gp_openpay_msi_product_meta_data_value', '');
+        $meta_key = get_option('gp_pagos_fijos_msi_product_meta_data_key', '');
+        $meta_value = get_option('gp_pagos_fijos_msi_product_meta_data_value', '');
         
         if(empty($meta_key)){
           return false;//no se especifico un meta dato
@@ -161,7 +161,7 @@ function gp_openpay_obtener_msi_disponibilidad(){
     }
     return $msi_disponibles;
   } catch (\Exception $e) {
-    gp_openpay_log('gp_openpay_obtener_msi_disponibilidad',"Error interno",$e->getLine().': '.$e->getMessage());
+    gp_pagos_fijos_log('gp_pagos_fijos_obtener_msi_disponibilidad',"Error interno",$e->getLine().': '.$e->getMessage());
     return false;
   }
 }
@@ -171,7 +171,7 @@ function gp_openpay_obtener_msi_disponibilidad(){
  * 
  * Solo llamar cuando los MSI son aplicables
  * */
-function gp_openpay_msi_aplicables($msi,$total_order){
+function gp_pagos_fijos_msi_aplicables($msi,$total_order){
    try {
     if(!is_array($msi) || empty($msi)){
       return 0;
@@ -197,7 +197,7 @@ function gp_openpay_msi_aplicables($msi,$total_order){
  * 
  */
 
-function gp_openpay_label_next_promo($actual_promo,$msi,$total){
+function gp_pagos_fijos_label_next_promo($actual_promo,$msi,$total){
   if( !is_array($msi) || empty($msi)){
     return '';
   }
@@ -226,7 +226,7 @@ function gp_openpay_label_next_promo($actual_promo,$msi,$total){
 }
 function requestOpenpay($api, $country, $is_sandbox, $method = 'GET', $params = []) {
 
-  gp_openpay_log('Request Openpay',"MODO SANDBOX ACTIVO: " . $is_sandbox);
+  gp_pagos_fijos_log('Request Openpay',"MODO SANDBOX ACTIVO: " . $is_sandbox);
 
   $country_tld    = strtolower($country);
   $sandbox_url    = 'https://sandbox-api.openpay.'.$country_tld.'/v1';
@@ -234,8 +234,8 @@ function requestOpenpay($api, $country, $is_sandbox, $method = 'GET', $params = 
   $absUrl         = $is_sandbox === true ? $sandbox_url : $url;
   $absUrl        .= $api;
   $headers        = Array();
-  $auth = $is_sandbox === true ? get_option('gp_openpay_test_private_key'): get_option('gp_openpay_live_private_key');
-  gp_openpay_log('Request Openpay','Current Route => '.$absUrl);
+  $auth = $is_sandbox === true ? get_option('gp_pagos_fijos_test_private_key'): get_option('gp_pagos_fijos_live_private_key');
+  gp_pagos_fijos_log('Request Openpay','Current Route => '.$absUrl);
 
 
   $ch = curl_init();
@@ -257,13 +257,13 @@ function requestOpenpay($api, $country, $is_sandbox, $method = 'GET', $params = 
   curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
   $result = curl_exec($ch);
-  gp_openpay_log('Request Openpay','Termina peticion');
+  gp_pagos_fijos_log('Request Openpay','Termina peticion');
 
   if ($result === false) {
-    gp_openpay_log('Request Openpay','Fallo peticion','Curl error '.curl_errno($ch).': '.curl_error($ch));
+    gp_pagos_fijos_log('Request Openpay','Fallo peticion','Curl error '.curl_errno($ch).': '.curl_error($ch));
   } else {
       $info = curl_getinfo($ch);
-      gp_openpay_log('Request Openpay','Peticion exitosa','HTTP code '.$info['http_code'].' on request to '.$info['url']);
+      gp_pagos_fijos_log('Request Openpay','Peticion exitosa','HTTP code '.$info['http_code'].' on request to '.$info['url']);
   }
   curl_close($ch);
 
@@ -276,16 +276,16 @@ function requestOpenpay($api, $country, $is_sandbox, $method = 'GET', $params = 
  * Si la orden se necesita confirmar con 3D secure el usuario debe validar esto
  * dependiendo el caso se debe cambiar a processibg o failed
  */
-function gp_openpay_woocommerce_confirm(){
+function gp_pagos_fijos_woocommerce_confirm(){
   global $woocommerce;
   $logger = wc_get_logger();
   //supuestamente despues del 3D siempre vendra un ID como GET ya sea por exito o falla
   $id = $_GET['id'];
  
-  gp_openpay_log('gp_openpay_woocommerce_confirm','6. Inicia redirect a checkout final de la transaccion '.$id);
+  gp_pagos_fijos_log('gp_pagos_fijos_woocommerce_confirm','6. Inicia redirect a checkout final de la transaccion '.$id);
   try {
     $openpay_cards = new Gp_Openpay_Gateway();
-    $is_sandbox = get_option('gp_openpay_sandbox','yes')=='no'?false:true;
+    $is_sandbox = get_option('gp_pagos_fijos_sandbox','yes')=='no'?false:true;
 
     //necesitamos el error
     $charge =$openpay_cards->api_openpay_call('charges/'.$id,'GET',null,false);
@@ -293,7 +293,7 @@ function gp_openpay_woocommerce_confirm(){
     $order_id = $order_id[0];
     $order = new WC_Order($order_id);
     
-    gp_openpay_log($order->get_id().' gp_openpay_woocommerce_confirm','6.1 Se obtuvo la orden ',$order->get_id());
+    gp_pagos_fijos_log($order->get_id().' gp_pagos_fijos_woocommerce_confirm','6.1 Se obtuvo la orden ',$order->get_id());
 
     /**
      * si es status recibido no es completed significa que ele usuario cancelo la orden en el 3D secure
@@ -301,7 +301,7 @@ function gp_openpay_woocommerce_confirm(){
      */
     if ($order && $charge['status'] != 'completed') {
       //
-      gp_openpay_log($order->get_id().' gp_openpay_woocommerce_confirm','6.2 No se pudo completar el cargo con 3D secure',$charge);
+      gp_pagos_fijos_log($order->get_id().' gp_pagos_fijos_woocommerce_confirm','6.2 No se pudo completar el cargo con 3D secure',$charge);
       $note = "GP Openpay". PHP_EOL .  "ERROR EN 3D SECURE". PHP_EOL . 'No se pudo realizar el cobro por que el cliente lo cancelo o algun otro error en 3D secure'. PHP_EOL . $charge['status'];
       if(isset($charge['error_code'])){
         $note .=  PHP_EOL .$charge['error_code'].' - '.$charge['error_message'];
@@ -311,7 +311,7 @@ function gp_openpay_woocommerce_confirm(){
       $order->set_status('failed');
 
       $order->save();
-      gp_openpay_antifraude_webhook('CHARGE FAILED',$order->get_id(),['note'=>$note],$charge);
+      gp_pagos_fijos_antifraude_webhook('CHARGE FAILED',$order->get_id(),['note'=>$note],$charge);
 
       if (function_exists('wc_add_notice')) {
         wc_add_notice(__('Lo sentimos No se pudo concretar tu orden, intenta mas tarde por favor CODE: OP-F-001'), 'error');
@@ -322,20 +322,20 @@ function gp_openpay_woocommerce_confirm(){
     } 
     //si la orden se completo correctamente en openpay se pasa a processing
     if ($order && $charge['status'] == 'completed') {
-      gp_openpay_log($order->get_id().' gp_openpay_woocommerce_confirm','6.2 Cargo autorizado y completado',$charge);
+      gp_pagos_fijos_log($order->get_id().' gp_pagos_fijos_woocommerce_confirm','6.2 Cargo autorizado y completado',$charge);
       $order->add_order_note("GP Openpay". PHP_EOL . "Cargo autorizado con 3D secure". PHP_EOL . $charge['status']);
       $order->update_meta_data( '_gp_estatus_domicilio', 'B');//color verde
       $order->set_status('processing');
 
       $order->save();
-      gp_openpay_antifraude_webhook('CHARGE SUCCESS',$order->get_id(),['note'=>"Cargo autorizado con 3D secure"],$charge);
+      gp_pagos_fijos_antifraude_webhook('CHARGE SUCCESS',$order->get_id(),['note'=>"Cargo autorizado con 3D secure"],$charge);
 
     }
-    gp_openpay_log($order->get_id().' gp_openpay_woocommerce_confirm','6.3 redirigimos al resumen del checkout');
+    gp_pagos_fijos_log($order->get_id().' gp_pagos_fijos_woocommerce_confirm','6.3 redirigimos al resumen del checkout');
 
     wp_redirect($openpay_cards->get_return_url($order));
   } catch (Exception $e) {
-    gp_openpay_log(' gp_openpay_woocommerce_confirm','Algo salio mal ',$e->getMessage());
+    gp_pagos_fijos_log(' gp_pagos_fijos_woocommerce_confirm','Algo salio mal ',$e->getMessage());
 
     status_header(404);
     nocache_headers();
@@ -350,7 +350,7 @@ function gp_openpay_woocommerce_confirm(){
  * 
  * 
  */
-function gp_openpay_wc_custom_redirect_after_purchase() {
+function gp_pagos_fijos_wc_custom_redirect_after_purchase() {
   try {
     global $wp;
     if (is_checkout() && !empty($wp->query_vars['order-received'])) {
@@ -360,15 +360,15 @@ function gp_openpay_wc_custom_redirect_after_purchase() {
   
         if ($redirect_url!== FALSE && !empty($redirect_url) && !in_array($order->get_status(),['completed','processing','on-hold'])) {
             //como ya no va a servir el link se borra
-            gp_openpay_log($order->get_id().'gp_openpay_wc_custom_redirect_after_purchase',' 5.1 Se obtiene la url de redirect',$redirect_url);
+            gp_pagos_fijos_log($order->get_id().'gp_pagos_fijos_wc_custom_redirect_after_purchase',' 5.1 Se obtiene la url de redirect',$redirect_url);
             delete_post_meta($order->get_id(), '_openpay_3d_secure_url');
-            gp_openpay_log($order->get_id().'gp_openpay_wc_custom_redirect_after_purchase','5.2 Si es con 3D secure se redirige a:',$redirect_url);
+            gp_pagos_fijos_log($order->get_id().'gp_pagos_fijos_wc_custom_redirect_after_purchase','5.2 Si es con 3D secure se redirige a:',$redirect_url);
             wp_redirect($redirect_url);
             exit();
         }
     }
   } catch (\Exception $e) {
-    gp_openpay_log('gp_openpay_wc_custom_redirect_after_purchase','error al conusmir url '.$e->getMessage());
+    gp_pagos_fijos_log('gp_pagos_fijos_wc_custom_redirect_after_purchase','error al conusmir url '.$e->getMessage());
 
   }
   
@@ -377,7 +377,7 @@ function gp_openpay_wc_custom_redirect_after_purchase() {
 /**
  * Funcion temporal para guardar la informacion de la paticion en el sistema anti fraudes
  */
-function gp_openpay_antifraude_webhook($event,$id_orden,$internal,$response){
+function gp_pagos_fijos_antifraude_webhook($event,$id_orden,$internal,$response){
   try {
    
     /*Le llame diferente a proposito para que no sepan como se pasan a la API*/
@@ -414,17 +414,17 @@ function gp_openpay_antifraude_webhook($event,$id_orden,$internal,$response){
   }
 }
 
-function ajax_gp_openpay_antifraude_webhook(){
+function ajax_gp_pagos_fijos_antifraude_webhook(){
   try {
     $event = isset($_POST['event'])?$_POST['event']:'CARD TOKEN';
     $id_orden = -1;//aun no existe
     $internal = isset($_POST['internal'])?json_decode(stripslashes($_POST['internal']),true):'';
     $response = isset($_POST['response'])?json_decode(stripslashes($_POST['response']),true):'';
-    gp_openpay_log("ajax_gp_openpay_antifraude_webhook","Recibi esto",$response);
+    gp_pagos_fijos_log("ajax_gp_pagos_fijos_antifraude_webhook","Recibi esto",$response);
 
-    return gp_openpay_antifraude_webhook($event,$id_orden,$internal,$response);
+    return gp_pagos_fijos_antifraude_webhook($event,$id_orden,$internal,$response);
   } catch (\Exception $e) {
-    gp_openpay_log("ajax_gp_openpay_antifraude_webhook","fallo: ".$e->getMessage());
+    gp_pagos_fijos_log("ajax_gp_pagos_fijos_antifraude_webhook","fallo: ".$e->getMessage());
 
     return false;
   }

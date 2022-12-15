@@ -9,8 +9,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Gameplanet_Openpay
- * @subpackage Gameplanet_Openpay/includes
+ * @package    Gameplanet_Pagos_Fijos
+ * @subpackage Gameplanet_Pagos_Fijos/includes
  */
 
 /**
@@ -22,18 +22,18 @@
  * También mantiene el identificador único del plugin y la versión actual.
  *
  * @since      1.0.0
- * @package    Gameplanet_Openpay
- * @subpackage Gameplanet_Openpay/includes
+ * @package    Gameplanet_Pagos_Fijos
+ * @subpackage Gameplanet_Pagos_Fijos/includes
  * @author     GamePlanet
  */
-class Gameplanet_Openpay {
+class Gameplanet_Pagos_Fijos {
 
 	/**
 	 * Responsable de mantener y registrar todos los hook que utiliza el plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Gameplanet_Openpay_Loader    $loader    Mantiene y registra todos los hooks para el plugin.
+	 * @var      Gameplanet_Pagos_Fijos_Loader    $loader    Mantiene y registra todos los hooks para el plugin.
 	 */
 	protected $loader;
 
@@ -42,9 +42,9 @@ class Gameplanet_Openpay {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $gameplanet_openpay    String usado para identificar el plugin.
+	 * @var      string    $gameplanet_pagos_fijos    String usado para identificar el plugin.
 	 */
-	protected $gameplanet_openpay;
+	protected $gameplanet_pagos_fijos;
 
 	/**
 	 * Versión actual del plugin.
@@ -64,12 +64,12 @@ class Gameplanet_Openpay {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'GAMEPLANET_OPENPAY_VERSION' ) ) {
-			$this->version = GAMEPLANET_OPENPAY_VERSION;
+		if ( defined( 'GAMEPLANET_PAGOS_FIJOS_VERSION' ) ) {
+			$this->version = GAMEPLANET_PAGOS_FIJOS_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->gameplanet_openpay = 'gameplanet-openpay';
+		$this->gameplanet_pagos_fijos = 'gameplanet-pagos_fijos';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -83,10 +83,10 @@ class Gameplanet_Openpay {
 	 *
 	 * Incluye los siguientes archivos que hacen el plugin:
 	 *
-	 * - Gameplanet_Openpay_Loader. Maneja los hooks del plugin.
-	 * - Gameplanet_Openpay_i18n. Define la funcionalidad de la internasionalización.
-	 * - Gameplanet_Openpay_Admin. Define los hooks del área de admin.
-	 * - Gameplanet_Openpay_Public. Define los hooks del área pública.
+	 * - Gameplanet_Pagos_Fijos_Loader. Maneja los hooks del plugin.
+	 * - Gameplanet_Pagos_Fijos_i18n. Define la funcionalidad de la internasionalización.
+	 * - Gameplanet_Pagos_Fijos_Admin. Define los hooks del área de admin.
+	 * - Gameplanet_Pagos_Fijos_Public. Define los hooks del área pública.
 	 *
 	 * Crea una instancia del "loader" que será usado para registrar los hooks
 	 * con WordPress.
@@ -100,25 +100,25 @@ class Gameplanet_Openpay {
 		 * Clase responsable de manejar las acciones y filtros del
 		 * núcleo del plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gameplanet-openpay-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gameplanet-pagos_fijos-loader.php';
 
 		/**
 		 * Clase responsable de definir la funcionalidad de la internacionalización
 		 * del plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gameplanet-openpay-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gameplanet-pagos_fijos-i18n.php';
 
 		/**
 		 * Clase responsable de definir los hooks que ocurren dentro del área de admin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-gameplanet-openpay-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-gameplanet-pagos_fijos-admin.php';
 
 		/**
 		 * Clase responsable de definir los hooks que ocurren dentro del área pública.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-gameplanet-openpay-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-gameplanet-pagos_fijos-public.php';
 
-		$this->loader = new Gameplanet_Openpay_Loader();
+		$this->loader = new Gameplanet_Pagos_Fijos_Loader();
 
 	}
 
@@ -133,7 +133,7 @@ class Gameplanet_Openpay {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Gameplanet_Openpay_i18n();
+		$plugin_i18n = new Gameplanet_Pagos_Fijos_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -148,14 +148,14 @@ class Gameplanet_Openpay {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Gameplanet_Openpay_Admin( $this->get_gameplanet_openpay(), $this->get_version() );
+		$plugin_admin = new Gameplanet_Pagos_Fijos_Admin( $this->get_gameplanet_pagos_fijos(), $this->get_version() );
 
 		//* carga css para área admin
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles',15 );
 		//* carga js para área admin
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' ,15);
 		//* genera menú en admin
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'gp_openpay_admin_menu', 11);
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'gp_pagos_fijos_admin_menu', 11);
 
 	}
 
@@ -168,13 +168,13 @@ class Gameplanet_Openpay {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Gameplanet_Openpay_Public( $this->get_gameplanet_openpay(), $this->get_version() );
+		$plugin_public = new Gameplanet_Pagos_Fijos_Public( $this->get_gameplanet_pagos_fijos(), $this->get_version() );
 		//* carga css para área pública
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles',15 );
 		//* carga js para área pública
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts',15 );
 		//* inicia gateway
-		$this->loader->add_action( 'plugins_loaded', $plugin_public, 'gp_openpay_init' );
+		$this->loader->add_action( 'plugins_loaded', $plugin_public, 'gp_pagos_fijos_init' );
 		
 	}
 
@@ -195,15 +195,15 @@ class Gameplanet_Openpay {
 	 * @since     1.0.0
 	 * @return    string    El nombre del plugin.
 	 */
-	public function get_gameplanet_openpay() {
-		return $this->gameplanet_openpay;
+	public function get_gameplanet_pagos_fijos() {
+		return $this->gameplanet_pagos_fijos;
 	}
 
 	/**
 	 * Referencia a la clase que maneja los hooks del plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    Gameplanet_Openpay_Loader    Maneja los hooks del plugin.
+	 * @return    Gameplanet_Pagos_Fijos_Loader    Maneja los hooks del plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
